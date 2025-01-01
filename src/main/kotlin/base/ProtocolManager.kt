@@ -23,13 +23,13 @@ object ProtocolManager {
         val controllers = reflections.getSubTypesOf(ProtocolController::class.java)
 
         controllers.forEach { clazz ->
-            if (clazz.isAnnotationPresent(ProtocolRoute::class.java)) {
+            if (clazz.isAnnotationPresent(RouteController::class.java)) {
                 try {
                     val controller = clazz.getDeclaredConstructor().newInstance()
                     val methods = clazz.methods
 
                     methods.forEach { method ->
-                        val annotation = method.getAnnotation(ProtocolHandler::class.java)
+                        val annotation = method.getAnnotation(RouteHandler::class.java)
                         if (annotation != null) {
                             handlerMap[annotation.handler] = { data, context, plr ->
                                 method.invoke(controller, data, context, plr)
