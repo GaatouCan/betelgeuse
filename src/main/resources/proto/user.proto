@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package proto.user;
+
+message ClientLoginRequest {
+  int64 id = 1;
+  string token = 2;
+}
+
+message UserInfo {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+}
