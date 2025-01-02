@@ -3,6 +3,23 @@ package org.example.net
 const val PACKAGE_MAGIC = 20241231
 const val PACKAGE_VERSION = 1001
 
+/************************************
+ |     magic     |      version     |
+ |----------------------------------|
+ |    4 bytes    |      4 bytes     |
+ |==================================|
+ |method |reverse|        id        |
+ |----------------------------------|
+ |2bytes |2bytes |      4 bytes     |
+ |==================================|
+ |     length    |      reverse     |
+ |----------------------------------|
+ |    4 bytes    |      4 bytes     |
+ |==================================|
+ |              data                |
+ |----------------------------------|
+ |        variable length           |
+ ************************************/
 data class Package(val header: Header, val data: ByteArray) {
 
     enum class CodecMethod(val value: Short) {

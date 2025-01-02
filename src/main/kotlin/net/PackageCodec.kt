@@ -14,10 +14,11 @@ class PackageCodec : ByteToMessageCodec<Package>() {
 
         buf.writeShort(pkg.header.method.value.toInt())
         buf.writeShort(0) // reverse
-        buf.writeInt(0) // reverse
 
         buf.writeInt(pkg.header.id)
         buf.writeInt(pkg.header.length)
+
+        buf.writeInt(0) // reverse
 
         // Write Data Bytes
         buf.writeBytes(pkg.data)
@@ -38,10 +39,10 @@ class PackageCodec : ByteToMessageCodec<Package>() {
 
         val method = buf.readShort()
         buf.readShort()
-        buf.readInt()
 
         val id = buf.readInt()
         val length = buf.readInt()
+        buf.readInt()
 
         if (magic != PACKAGE_MAGIC || version != PACKAGE_VERSION) return
 
