@@ -31,6 +31,9 @@ dependencies {
     // YAML
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.2")
+
+    // JSON
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
 }
 
 sourceSets {

@@ -1,5 +1,7 @@
 package org.example.base.route
 
+import org.example.controller.ProtocolType
+
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class RouteHandler(val handler: Int)
+annotation class ProtoMapping(val type: ProtocolType)

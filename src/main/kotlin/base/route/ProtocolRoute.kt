@@ -15,21 +15,21 @@ import org.example.player.PlayerManager
 
 object ProtocolRoute {
     private val handlerMap : HashMap<Int, (ByteArray, ChannelHandlerContext, Player?) -> Unit> = hashMapOf()
-    private val controllerMap : HashMap<String, ProtocolController> = hashMapOf()
+    private val controllerMap : HashMap<String, RouteController> = hashMapOf()
 
     private val logger: Logger = LogManager.getLogger(ProtocolRoute::class.java)
 
     init {
         val reflections = Reflections(ConfigurationBuilder().forPackages("org.example.controller").addScanners(SubTypesScanner(false)))
-        val classes = reflections.getSubTypesOf(ProtocolController::class.java)
+        val classes = reflections.getSubTypesOf(RouteController::class.java)
 
 //        val reflections = Reflections(ConfigurationBuilder().forPackages("org.example").addScanners(TypeAnnotationsScanner()))
 //        val classes = reflections.getTypesAnnotatedWith(RouteController::class.java)
 
         classes.forEach { clazz ->
-            if (clazz.isAnnotationPresent(RouteController::class.java)) {
+            if (clazz.isAnnotationPresent(RouteMapping::class.java)) {
                 try {
-                    val annotation = clazz.getAnnotation(RouteController::class.java)
+                    val annotation = clazz.getAnnotation(RouteMapping::class.java)
                     val controller = clazz.getDeclaredConstructor().newInstance()
 
                     if (annotation != null) {
@@ -39,9 +39,9 @@ object ProtocolRoute {
                     val methods = clazz.methods
 
                     methods.forEach { method ->
-                        val annotation = method.getAnnotation(RouteHandler::class.java)
+                        val annotation = method.getAnnotation(ProtoMapping::class.java)
                         if (annotation != null) {
-                            handlerMap[annotation.handler] = { data, context, plr ->
+                            handlerMap[annotation.type.value] = { data, context, plr ->
                                 method.invoke(controller, data, context, plr)
                             }
                         }
