@@ -3,28 +3,28 @@ package org.example.net
 const val PACKAGE_MAGIC = 20241231
 const val PACKAGE_VERSION = 1001
 
-enum class PackageMethod(val value: Short) {
-    LINE_BASED(0),
-    PROTOBUF(1);
+data class Package(val header: Header, val data: ByteArray) {
 
-    companion object {
-        fun fromValue(value: Short): PackageMethod? {
-            return PackageMethod.entries.find { it.value == value }
+    enum class CodecMethod(val value: Short) {
+        LINE_BASED(0),
+        PROTOBUF(1);
+
+        companion object {
+            fun fromValue(value: Short): CodecMethod? {
+                return CodecMethod.entries.find { it.value == value }
+            }
         }
     }
-}
 
-data class PackageHeader(
-    val magic: Int,
-    val version: Int,
+    data class Header(
+        val magic: Int,
+        val version: Int,
 
-    var method: PackageMethod,
+        var method: CodecMethod,
 
-    var id: Int,
-    var length: Int
-)
-
-data class Package(val header: PackageHeader, val data: ByteArray) {
+        var id: Int,
+        var length: Int
+    )
 
     init {
         if (header.length == 0) {
@@ -52,7 +52,7 @@ data class Package(val header: PackageHeader, val data: ByteArray) {
 
     companion object {
         fun createPackage(id: Int, data: ByteArray): Package {
-            val header = PackageHeader(PACKAGE_MAGIC, PACKAGE_VERSION, PackageMethod.PROTOBUF, id, data.size)
+            val header = Header(PACKAGE_MAGIC, PACKAGE_VERSION, CodecMethod.PROTOBUF, id, data.size)
             return Package(header, data)
         }
     }

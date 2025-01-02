@@ -51,8 +51,8 @@ class PackageCodec : ByteToMessageCodec<Package>() {
         val data = ByteArray(length)
         buf.readBytes(data)
 
-        val header = PackageMethod.fromValue(method)?.let {
-            PackageHeader(
+        val header = Package.CodecMethod.fromValue(method)?.let {
+            Package.Header(
                 magic, version, it, id, length
             )
         } ?: return
