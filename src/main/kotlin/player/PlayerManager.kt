@@ -1,7 +1,7 @@
 package org.example.player
 
 import io.netty.channel.ChannelHandlerContext
-import org.example.net.AttributeKeys
+import org.example.base.net.AttributeKeys
 
 object PlayerManager {
 

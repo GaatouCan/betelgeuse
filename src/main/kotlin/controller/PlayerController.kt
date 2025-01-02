@@ -9,7 +9,7 @@ import org.example.base.LoginManager
 import org.example.base.route.ProtocolController
 import org.example.base.route.RouteHandler
 import org.example.base.route.RouteController
-import org.example.net.AttributeKeys
+import org.example.base.net.AttributeKeys
 import org.example.player.Player
 import org.example.player.PlayerManager
 

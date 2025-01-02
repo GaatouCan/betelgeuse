@@ -1,4 +1,4 @@
-package org.example.net
+package org.example.base.net
 
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext

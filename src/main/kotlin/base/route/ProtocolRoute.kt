@@ -7,8 +7,8 @@ import org.reflections.Reflections
 import org.reflections.scanners.SubTypesScanner
 import org.reflections.util.ConfigurationBuilder
 
-import org.example.net.AttributeKeys
-import org.example.net.Package
+import org.example.base.net.AttributeKeys
+import org.example.base.net.Package
 import org.example.player.Player
 import org.example.player.PlayerManager
 

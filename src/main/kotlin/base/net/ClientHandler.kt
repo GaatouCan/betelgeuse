@@ -1,4 +1,4 @@
-package org.example.net
+package org.example.base.net
 
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler

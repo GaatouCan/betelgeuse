@@ -1,4 +1,4 @@
-package org.example.net
+package org.example.base.net
 
 const val PACKAGE_MAGIC = 20241231
 const val PACKAGE_VERSION = 1001

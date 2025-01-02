@@ -7,9 +7,9 @@ import io.netty.channel.EventLoopGroup
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioSocketChannel
-import org.example.net.ClientHandler
-import org.example.net.Package
-import org.example.net.PackageCodec
+import org.example.base.net.ClientHandler
+import org.example.base.net.Package
+import org.example.base.net.PackageCodec
 import proto.user.clientLoginRequest
 
 fun main(args: Array<String>) {
