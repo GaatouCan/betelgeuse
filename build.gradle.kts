@@ -13,13 +13,23 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+
+    // Protobuf
     implementation("com.google.protobuf:protobuf-java:4.29.2")
     implementation("com.google.protobuf:protobuf-java-util:4.29.2")
     implementation("com.google.protobuf:protobuf-kotlin:4.29.2")
 
+    // Netty
     implementation("io.netty:netty-all:4.1.116.Final")
+
+    // Log4j
     implementation("org.apache.logging.log4j:log4j-core:2.24.3")
+
+    // Reflection
     implementation("org.reflections:reflections:0.9.12")
+
+    // YAML
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.2")
 }
 
 sourceSets {
@@ -46,7 +56,6 @@ tasks.shadowJar {
     manifest {
         attributes["Main-Class"] = "org.example.ServerKt"
     }
-    // from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
 }
 
 kotlin {
