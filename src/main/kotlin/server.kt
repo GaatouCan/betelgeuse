@@ -17,7 +17,7 @@ fun main() {
 
     val bossGroup: EventLoopGroup = NioEventLoopGroup()
     val workerGroup: EventLoopGroup = NioEventLoopGroup()
-    val logger = LogManager.getLogger()
+    val logger = LogManager.getLogger("MainLogger")
 
     try {
         val bootstrap = ServerBootstrap()

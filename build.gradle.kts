@@ -1,5 +1,7 @@
 plugins {
     kotlin("jvm") version "2.0.21"
+    application
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "org.example"
@@ -31,9 +33,22 @@ sourceSets {
     }
 }
 
+application {
+    mainClass.set("org.example.ServerKt") // 替换为主类的全限定名
+}
+
 tasks.test {
     useJUnitPlatform()
 }
+
+tasks.shadowJar {
+    archiveClassifier.set("") // 替代默认的 "-all"
+    manifest {
+        attributes["Main-Class"] = "org.example.ServerKt"
+    }
+    // from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+}
+
 kotlin {
     jvmToolchain(21)
 }
