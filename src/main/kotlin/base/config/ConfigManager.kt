@@ -9,8 +9,8 @@ import org.apache.logging.log4j.LogManager
 import org.reflections.Reflections
 import org.reflections.scanners.SubTypesScanner
 import org.reflections.util.ConfigurationBuilder
-import java.io.File
 import kotlin.reflect.KClass
+import java.io.File
 
 object ConfigManager {
     private val logger = LogManager.getLogger(ConfigManager::class.java)
