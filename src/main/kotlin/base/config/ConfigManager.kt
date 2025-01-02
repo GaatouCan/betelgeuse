@@ -16,7 +16,7 @@ object ConfigManager {
     private val logger = LogManager.getLogger(ConfigManager::class.java)
 
     private var globalConfig: ServerConfig? = null
-    private var configMap: HashMap<String, HashMap<Int, LogicConfig>> = hashMapOf()
+    private val configMap = hashMapOf<String, HashMap<Int, LogicConfig>>()
 
     init {
         val yamlMapper = ObjectMapper(YAMLFactory()).apply {
