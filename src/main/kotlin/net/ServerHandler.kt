@@ -5,7 +5,7 @@ import io.netty.channel.SimpleChannelInboundHandler
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
 
-import org.example.base.ProtocolManager
+import org.example.base.ProtocolRoute
 
 class ServerHandler : SimpleChannelInboundHandler<Package>() {
     private val logger = LogManager.getLogger(ServerHandler::class.java)
@@ -20,7 +20,7 @@ class ServerHandler : SimpleChannelInboundHandler<Package>() {
     override fun channelRead0(ctx: ChannelHandlerContext?, pkg: Package?) {
         if (pkg == null || ctx == null) return
 
-        ProtocolManager.onPackage(ctx, pkg)
+        ProtocolRoute.onPackage(ctx, pkg)
     }
 
     override fun exceptionCaught(ctx: ChannelHandlerContext?, cause: Throwable?) {

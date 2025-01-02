@@ -15,7 +15,7 @@ import org.example.player.PlayerManager
 
 import proto.user.User
 
-@RouteController(1)
+@RouteController("player")
 class PlayerController : ProtocolController {
 
     private val logger = LogManager.getLogger(PlayerController::class.java)

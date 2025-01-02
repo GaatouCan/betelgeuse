@@ -1,7 +1,6 @@
 package org.example.base
 
 import io.netty.channel.ChannelHandlerContext
-
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.reflections.Reflections
@@ -14,18 +13,29 @@ import org.example.player.Player
 import org.example.player.PlayerManager
 
 
-object ProtocolManager {
+object ProtocolRoute {
     private val handlerMap : HashMap<Int, (ByteArray, ChannelHandlerContext, Player?) -> Unit> = hashMapOf()
-    private val logger: Logger = LogManager.getLogger(ProtocolManager::class.java)
+    private val controllerMap : HashMap<String, ProtocolController> = hashMapOf()
+
+    private val logger: Logger = LogManager.getLogger(ProtocolRoute::class.java)
 
     init {
         val reflections = Reflections(ConfigurationBuilder().forPackages("org.example").addScanners(SubTypesScanner(false)))
-        val controllers = reflections.getSubTypesOf(ProtocolController::class.java)
+        val classes = reflections.getSubTypesOf(ProtocolController::class.java)
 
-        controllers.forEach { clazz ->
+//        val reflections = Reflections(ConfigurationBuilder().forPackages("org.example").addScanners(TypeAnnotationsScanner()))
+//        val classes = reflections.getTypesAnnotatedWith(RouteController::class.java)
+
+        classes.forEach { clazz ->
             if (clazz.isAnnotationPresent(RouteController::class.java)) {
                 try {
+                    val annotation = clazz.getAnnotation(RouteController::class.java)
                     val controller = clazz.getDeclaredConstructor().newInstance()
+
+                    if (annotation != null) {
+                        controllerMap[annotation.route] = controller
+                    }
+
                     val methods = clazz.methods
 
                     methods.forEach { method ->
@@ -43,16 +53,11 @@ object ProtocolManager {
         }
     }
 
-//    fun showAll() {
-//        handlerMap.forEach { (key, handler) ->
-//            logger.info(key)
-//        }
-//    }
-//
-//    fun playerInvoke(id: Int, plr: Player, data: ByteArray) {
-//        val handler = handlerMap[id]?: return
-//        handler.invoke(plr, data)
-//    }
+    fun showAllRoute() {
+        controllerMap.forEach { key, controller ->
+            logger.info("Load Protocol Route $key")
+        }
+    }
 
     fun onPackage(ctx : ChannelHandlerContext, pkg: Package) {
         val handler = handlerMap[pkg.header.id]

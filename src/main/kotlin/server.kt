@@ -10,8 +10,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel
 import org.example.net.PackageCodec
 import org.example.net.ServerHandler
 import org.apache.logging.log4j.LogManager
+import org.example.base.ProtocolRoute
 
 fun main() {
+    ProtocolRoute.showAllRoute()
+
     val bossGroup: EventLoopGroup = NioEventLoopGroup()
     val workerGroup: EventLoopGroup = NioEventLoopGroup()
     val logger = LogManager.getLogger()
