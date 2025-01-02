@@ -11,15 +11,21 @@ import org.example.base.config.ConfigManager
 import org.example.base.net.PackageCodec
 import org.example.base.net.ServerHandler
 import org.example.base.route.ProtocolRoute
+import kotlin.system.exitProcess
 
 fun main() {
-    ProtocolRoute.showAllRoute()
+    val logger = LogManager.getLogger("MainLogger")
 
     val globalConfig = ConfigManager.getGlobalConfig()
+    if (globalConfig == null) {
+        logger.error("GlobalConfig is null")
+        exitProcess(1)
+    }
+
+    ProtocolRoute.showAllRoute()
 
     val bossGroup: EventLoopGroup = NioEventLoopGroup()
-    val workerGroup: EventLoopGroup = NioEventLoopGroup(4)
-    val logger = LogManager.getLogger("MainLogger")
+    val workerGroup: EventLoopGroup = NioEventLoopGroup(globalConfig.server.worker)
 
     try {
         val bootstrap = ServerBootstrap()
@@ -33,8 +39,8 @@ fun main() {
                 }
             })
 
-        val channelFuture = bootstrap.bind(8080).sync()
-        logger.info("Listening on port 8080")
+        val channelFuture = bootstrap.bind(globalConfig.server.port).sync()
+        logger.info("Listening on port ${globalConfig.server.port}")
 
         channelFuture.channel().closeFuture().sync()
     } finally {
