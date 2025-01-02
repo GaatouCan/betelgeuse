@@ -1,4 +1,4 @@
-package org.example.base
+package org.example.base.route
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)

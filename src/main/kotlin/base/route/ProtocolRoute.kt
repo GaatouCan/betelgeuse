@@ -1,4 +1,4 @@
-package org.example.base
+package org.example.base.route
 
 import io.netty.channel.ChannelHandlerContext
 import org.apache.logging.log4j.LogManager

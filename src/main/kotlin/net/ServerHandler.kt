@@ -5,7 +5,7 @@ import io.netty.channel.SimpleChannelInboundHandler
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
 
-import org.example.base.ProtocolRoute
+import org.example.base.route.ProtocolRoute
 
 class ServerHandler : SimpleChannelInboundHandler<Package>() {
     private val logger = LogManager.getLogger(ServerHandler::class.java)
