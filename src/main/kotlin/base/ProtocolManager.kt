@@ -19,7 +19,7 @@ object ProtocolManager {
     private val logger: Logger = LogManager.getLogger(ProtocolManager::class.java)
 
     init {
-        val reflections = Reflections(ConfigurationBuilder().forPackages("").addScanners(SubTypesScanner(false)))
+        val reflections = Reflections(ConfigurationBuilder().forPackages("org.example").addScanners(SubTypesScanner(false)))
         val controllers = reflections.getSubTypesOf(ProtocolController::class.java)
 
         controllers.forEach { clazz ->
