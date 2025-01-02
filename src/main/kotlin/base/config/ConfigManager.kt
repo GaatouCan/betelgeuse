@@ -11,6 +11,7 @@ import org.reflections.scanners.SubTypesScanner
 import org.reflections.util.ConfigurationBuilder
 import kotlin.reflect.KClass
 import java.io.File
+import kotlin.system.exitProcess
 
 object ConfigManager {
     private val logger = LogManager.getLogger(ConfigManager::class.java)
@@ -48,9 +49,10 @@ object ConfigManager {
                 try {
                     val annotation = clazz.getAnnotation(ConfigPath::class.java)
                     if (annotation != null) {
-                        val url = this::class.java.getResource("/config/${annotation.path}.json")
-                        if (url != null) {
-                            val file = File(url.toURI())
+                        val path = annotation.path.replace(".", "/")
+                        val configUrl = this::class.java.getResource("/config/$path.json")
+                        if (configUrl != null) {
+                            val file = File(configUrl.toURI())
                             if (file.exists()) {
                                 val config = loadJsonFile(jsonMapper, file, clazz.kotlin)
 //                                config.forEach { key, value ->
@@ -65,6 +67,7 @@ object ConfigManager {
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    exitProcess(2)
                 }
             }
         }
@@ -89,6 +92,9 @@ object ConfigManager {
             val node = field.value
 
             val config = mapper.treeToValue(node, type.java)
+            if (result.containsKey(key.toInt()))
+                throw IndexOutOfBoundsException("Key $key is out of define. file ${file.absolutePath}")
+
             result[key.toInt()] = config
         }
         return result
