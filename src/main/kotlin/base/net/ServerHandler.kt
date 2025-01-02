@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager
 import java.io.IOException
 
 import org.example.base.route.ProtocolRoute
+import org.example.player.PlayerManager
 
 class ServerHandler : SimpleChannelInboundHandler<Package>() {
     private val logger = LogManager.getLogger(ServerHandler::class.java)
@@ -21,6 +22,16 @@ class ServerHandler : SimpleChannelInboundHandler<Package>() {
         if (pkg == null || ctx == null) return
 
         ProtocolRoute.onPackage(ctx, pkg)
+    }
+
+    override fun channelInactive(ctx: ChannelHandlerContext?) {
+        super.channelInactive(ctx)
+        if (ctx == null) return
+
+        val pid = ctx.channel().attr(AttributeKeys.PLAYER_ID).get() ?: return
+        logger.info("Player [$pid] Disconnected.")
+
+        PlayerManager.onLogout(pid)
     }
 
     override fun exceptionCaught(ctx: ChannelHandlerContext?, cause: Throwable?) {

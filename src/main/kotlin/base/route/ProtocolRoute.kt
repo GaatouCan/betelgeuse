@@ -29,19 +29,19 @@ object ProtocolRoute {
         classes.forEach { clazz ->
             if (clazz.isAnnotationPresent(RouteMapping::class.java)) {
                 try {
-                    val annotation = clazz.getAnnotation(RouteMapping::class.java)
+                    val routeAnnotation = clazz.getAnnotation(RouteMapping::class.java)
                     val controller = clazz.getDeclaredConstructor().newInstance()
 
-                    if (annotation != null) {
-                        controllerMap[annotation.route] = controller
+                    if (routeAnnotation != null) {
+                        controllerMap[routeAnnotation.route] = controller
                     }
 
                     val methods = clazz.methods
 
                     methods.forEach { method ->
-                        val annotation = method.getAnnotation(ProtoMapping::class.java)
-                        if (annotation != null) {
-                            handlerMap[annotation.type.value] = { data, context, plr ->
+                        val protoAnnotation = method.getAnnotation(ProtoMapping::class.java)
+                        if (protoAnnotation != null) {
+                            handlerMap[protoAnnotation.type.value] = { data, context, plr ->
                                 method.invoke(controller, data, context, plr)
                             }
                         }
@@ -54,7 +54,7 @@ object ProtocolRoute {
     }
 
     fun showAllRoute() {
-        controllerMap.forEach { key, controller ->
+        controllerMap.forEach { (key, _) ->
             logger.info("Load Protocol Route $key")
         }
     }
