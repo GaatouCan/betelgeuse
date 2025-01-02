@@ -20,7 +20,7 @@ object ProtocolRoute {
     private val logger: Logger = LogManager.getLogger(ProtocolRoute::class.java)
 
     init {
-        val reflections = Reflections(ConfigurationBuilder().forPackages("org.example").addScanners(SubTypesScanner(false)))
+        val reflections = Reflections(ConfigurationBuilder().forPackages("org.example.controller").addScanners(SubTypesScanner(false)))
         val classes = reflections.getSubTypesOf(ProtocolController::class.java)
 
 //        val reflections = Reflections(ConfigurationBuilder().forPackages("org.example").addScanners(TypeAnnotationsScanner()))
