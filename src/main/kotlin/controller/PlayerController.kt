@@ -27,9 +27,9 @@ class PlayerController : RouteController {
         val pid = LoginManager.onLogin(req.id, req.token)
         if (pid <= 1000) return
 
+        logger.info("Player[$pid] login request, token=${req.token}")
+
         ctx.channel().attr(AttributeKeys.PLAYER_ID).set(pid)
         PlayerManager.onLogin(pid, ctx)
-
-        logger.info("Player[$pid] logged in, token=${req.token}")
     }
 }
