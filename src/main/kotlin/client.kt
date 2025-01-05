@@ -10,7 +10,7 @@ import io.netty.channel.socket.nio.NioSocketChannel
 import org.example.base.net.ClientHandler
 import org.example.base.net.Package
 import org.example.base.net.PackageCodec
-import proto.user.clientLoginRequest
+import proto.player.clientLoginRequest
 
 fun main(args: Array<String>) {
     val host = "localhost"

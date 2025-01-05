@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package proto.user;
+package proto.player;
 
 message ClientLoginRequest {
   int64 id = 1;
   string token = 2;
 }
 
-message UserInfo {
+message PlayerInfo {
   int32 id = 1;
   string name = 2;
   string email = 3;
