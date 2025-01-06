@@ -12,20 +12,37 @@ object FriendManager {
     fun checkFriend(lhs: Long, rhs: Long): Boolean {
         if (lhs <= 1000 || rhs <= 1000) return false
         if (lhs == rhs) return false
-        if (friendMap.containsKey(lhs)) {
-            val iter = friendMap[lhs]!!
-            if (iter.contains(rhs)) {
-                if (iter[rhs]!!.startTime > 0)
-                    return true
+
+        friendMap[lhs]?.let{
+            it[rhs]?.let {
+                return it.startTime > 0
             }
         }
-        if (friendMap.containsKey(rhs)) {
-            val iter = friendMap[rhs]!!
-            if (iter.contains(lhs)) {
-                if (iter[lhs]!!.startTime > 0)
-                    return true
+
+        friendMap[rhs]?.let{
+            it[lhs]?.let {
+                return it.startTime > 0
             }
         }
+
         return false
+    }
+
+    fun addFriend(lhs: Long, rhs: Long) : Int {
+        checkFriend(lhs, rhs).takeIf { it }?.let {
+            return 1
+        }
+
+        // TODO: 加好友限制检查
+
+        if (!friendMap.containsKey(lhs)) {
+            friendMap[lhs] = hashMapOf<Long, FriendInfo>()
+        }
+
+        friendMap[lhs]!![rhs] = FriendInfo(lhs, rhs, System.currentTimeMillis())
+
+        // TODO: 同步数据库
+
+        return 0
     }
 }
