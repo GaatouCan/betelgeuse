@@ -13,7 +13,9 @@ import kotlin.reflect.full.primaryConstructor
 class Player(val context: ChannelHandlerContext) {
 
     private val logger = LogManager.getLogger(Player::class.java)
+
     val componentMap = hashMapOf<KClass<out BaseComponent>, BaseComponent>()
+    val nameToComponent = hashMapOf<String, BaseComponent>()
 
     init {
         val reflections = Reflections(ConfigurationBuilder().forPackages("org.example.player.component").addScanners(SubTypesScanner(false)))
@@ -24,7 +26,9 @@ class Player(val context: ChannelHandlerContext) {
             if (annotation != null) {
                 try {
                     clazz.primaryConstructor?.let { constructor ->
-                        componentMap[clazz] = constructor.call(this)
+                        val ct = constructor.call(this)
+                        componentMap[clazz] = ct
+                        nameToComponent[annotation.name] = ct
                     }
                 } catch (e: Exception) {
                     logger.error("Init Player[${getPlayerID()}] error: ${e.message}")
@@ -49,5 +53,9 @@ class Player(val context: ChannelHandlerContext) {
         return componentMap[componentClass]?.let {
             it as? T
         }
+    }
+
+    fun getComponentByName(name: String): BaseComponent? {
+        return nameToComponent[name]
     }
 }

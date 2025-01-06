@@ -13,14 +13,14 @@ object FriendManager {
         if (lhs <= 1000 || rhs <= 1000) return false
         if (lhs == rhs) return false
 
-        friendMap[lhs]?.let {
-            it[rhs]?.let {
+        friendMap[lhs]?.let { iter ->
+            iter[rhs]?.let {
                 return it.startTime > 0
             }
         }
 
-        friendMap[rhs]?.let {
-            it[lhs]?.let {
+        friendMap[rhs]?.let { iter ->
+            iter[lhs]?.let {
                 return it.startTime > 0
             }
         }
@@ -36,11 +36,11 @@ object FriendManager {
         // TODO: 加好友限制检查
 
         if (!friendMap.containsKey(lhs))
-            friendMap[lhs] = hashMapOf<Long, FriendInfo>()
+            friendMap[lhs] = hashMapOf()
         friendMap[lhs]!![rhs] = FriendInfo(lhs, rhs, System.currentTimeMillis())
 
         if (!friendMap.containsKey(rhs))
-            friendMap[rhs] = hashMapOf<Long, FriendInfo>()
+            friendMap[rhs] = hashMapOf()
         friendMap[rhs]!![lhs] = FriendInfo(rhs, lhs, System.currentTimeMillis())
 
         // TODO: 同步数据库
