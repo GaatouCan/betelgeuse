@@ -5,6 +5,9 @@ object FriendManager {
     // 玩家好友信息二维哈希表
     private val friendMap = hashMapOf<Long, HashMap<Long, FriendInfo>>()
 
+    private val applyMap = hashMapOf<Long, HashMap<Long, ApplyInfo>>()
+    private val blackListMap = hashMapOf<Long, HashMap<Long, BlackInfo>>()
+
     init {
 
     }
@@ -48,14 +51,51 @@ object FriendManager {
         return 0
     }
 
-    fun removeFriend(lhs: Long, rhs: Long): Int {
+    fun removeFriend(lhs: Long, rhs: Long) {
         checkFriend(lhs, rhs).takeUnless { it }?.let {
-            return 1
+            return
         }
 
         friendMap[lhs]?.remove(rhs)
         friendMap[rhs]?.remove(lhs)
+    }
 
-        return 0
+    fun checkFriendApply(lhs: Long, rhs: Long): Boolean {
+        if (lhs <= 1000 || rhs <= 1000) return false
+        if (lhs == rhs) return false
+
+        applyMap[lhs]?.let { iter ->
+            iter[rhs]?.let {
+                return it.startTime > 0
+            }
+        }
+
+        applyMap[rhs]?.let { iter ->
+            iter[lhs]?.let {
+                return it.startTime > 0
+            }
+        }
+
+        return false
+    }
+
+    fun sendFriendApply(lhs: Long, rhs: Long): Boolean {
+        if (lhs <= 1000 || rhs <= 1000) return false
+        if (lhs == rhs) return false
+
+        if (!applyMap.containsKey(lhs))
+            applyMap[lhs] = hashMapOf()
+
+        applyMap[lhs]!![rhs] = ApplyInfo(lhs, rhs, System.currentTimeMillis())
+        return false
+    }
+
+    fun removeApply(lhs: Long, rhs: Long) {
+        checkFriendApply(lhs, rhs).takeUnless { it }?.let {
+            return
+        }
+
+        applyMap[lhs]?.remove(rhs)
+        applyMap[rhs]?.remove(lhs)
     }
 }

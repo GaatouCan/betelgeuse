@@ -15,7 +15,7 @@ class Player(val context: ChannelHandlerContext) {
     private val logger = LogManager.getLogger(Player::class.java)
 
     val componentMap = hashMapOf<KClass<out BaseComponent>, BaseComponent>()
-    val nameToComponent = hashMapOf<String, BaseComponent>()
+    private val nameToComponent = hashMapOf<String, BaseComponent>()
 
     init {
         val reflections = Reflections(ConfigurationBuilder().forPackages("org.example.player.component").addScanners(SubTypesScanner(false)))
