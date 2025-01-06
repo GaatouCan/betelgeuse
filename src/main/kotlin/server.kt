@@ -16,8 +16,8 @@ import kotlin.system.exitProcess
 fun main() {
     val logger = LogManager.getLogger("MainLogger")
 
-    val globalConfig = ConfigManager.getGlobalConfig()
-    if (globalConfig == null) {
+    val cfg = ConfigManager.getGlobalConfig()
+    if (cfg == null) {
         logger.error("Global Configuration is null")
         exitProcess(1)
     }
@@ -25,7 +25,7 @@ fun main() {
     ProtocolRoute.showAllRoute()
 
     val bossGroup: EventLoopGroup = NioEventLoopGroup()
-    val workerGroup: EventLoopGroup = NioEventLoopGroup(globalConfig.server.worker)
+    val workerGroup: EventLoopGroup = NioEventLoopGroup(cfg.server.worker)
 
     try {
         val bootstrap = ServerBootstrap()
@@ -39,8 +39,8 @@ fun main() {
                 }
             })
 
-        val channelFuture = bootstrap.bind(globalConfig.server.port).sync()
-        logger.info("Listening on port ${globalConfig.server.port}")
+        val channelFuture = bootstrap.bind(cfg.server.port).sync()
+        logger.info("Listening on port ${cfg.server.port}")
 
         channelFuture.channel().closeFuture().sync()
     } finally {
