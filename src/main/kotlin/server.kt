@@ -18,7 +18,7 @@ fun main() {
 
     val globalConfig = ConfigManager.getGlobalConfig()
     if (globalConfig == null) {
-        logger.error("GlobalConfig is null")
+        logger.error("Global Configuration is null")
         exitProcess(1)
     }
 
