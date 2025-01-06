@@ -11,6 +11,10 @@ import org.example.base.net.AttributeKeys
 import org.example.base.net.Package
 import org.example.player.Player
 import org.example.player.PlayerManager
+import kotlin.reflect.full.createInstance
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.memberFunctions
+import kotlin.reflect.full.primaryConstructor
 
 
 object ProtocolRoute {
@@ -21,28 +25,25 @@ object ProtocolRoute {
 
     init {
         val reflections = Reflections(ConfigurationBuilder().forPackages("org.example.controller").addScanners(SubTypesScanner(false)))
-        val classes = reflections.getSubTypesOf(RouteController::class.java)
+        val classes = reflections.getSubTypesOf(RouteController::class.java).map { it.kotlin }
 
 //        val reflections = Reflections(ConfigurationBuilder().forPackages("org.example").addScanners(TypeAnnotationsScanner()))
 //        val classes = reflections.getTypesAnnotatedWith(RouteController::class.java)
 
         classes.forEach { clazz ->
-            if (clazz.isAnnotationPresent(RouteMapping::class.java)) {
+            val routeAnnotation = clazz.findAnnotation<RouteMapping>()
+            if (routeAnnotation != null) {
                 try {
-                    val routeAnnotation = clazz.getAnnotation(RouteMapping::class.java)
-                    val controller = clazz.getDeclaredConstructor().newInstance()
+                    val controller = clazz.primaryConstructor?.call()
+                    if (controller == null) return@forEach
 
-                    if (routeAnnotation != null) {
-                        controllerMap[routeAnnotation.route] = controller
-                    }
+                    controllerMap[routeAnnotation.route] = controller
 
-                    val methods = clazz.methods
-
-                    methods.forEach { method ->
-                        val protoAnnotation = method.getAnnotation(ProtoMapping::class.java)
+                    clazz.memberFunctions.forEach { method ->
+                        val protoAnnotation = method.findAnnotation<ProtoMapping>()
                         if (protoAnnotation != null) {
                             handlerMap[protoAnnotation.type.value] = { data, context, plr ->
-                                method.invoke(controller, data, context, plr)
+                                method.call(controller, data, context, plr)
                             }
                         }
                     }
