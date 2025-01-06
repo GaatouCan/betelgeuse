@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package proto.friend;
+
+message FriendInfo {
+  int64 pid = 1;
+  int64 startTime = 2;
+  string tag = 3;
+}
+
+message FriendListRequest {
+  int64 pid = 1;
+}
+
+message FriendListResponse {
+  repeated FriendInfo list = 1;
+}
