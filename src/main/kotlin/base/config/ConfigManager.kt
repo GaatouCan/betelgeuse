@@ -11,6 +11,7 @@ import org.reflections.scanners.SubTypesScanner
 import org.reflections.util.ConfigurationBuilder
 import kotlin.reflect.KClass
 import java.io.File
+import kotlin.reflect.full.findAnnotation
 import kotlin.system.exitProcess
 
 object ConfigManager {
@@ -42,27 +43,25 @@ object ConfigManager {
         }
 
         val reflections = Reflections(ConfigurationBuilder().forPackages("org.example.config").addScanners(SubTypesScanner(false)))
-        val classes = reflections.getSubTypesOf(LogicConfig::class.java)
+        val classes = reflections.getSubTypesOf(LogicConfig::class.java).map { it.kotlin }
 
         classes.forEach { clazz ->
-            if (clazz.isAnnotationPresent(ConfigPath::class.java)) {
+            val annotation = clazz.findAnnotation<ConfigPath>()
+            if (annotation != null) {
                 try {
-                    val annotation = clazz.getAnnotation(ConfigPath::class.java)
-                    if (annotation != null) {
-                        val path = annotation.path.replace(".", "/")
-                        val configUrl = this::class.java.getResource("/config/$path.json")
-                        if (configUrl != null) {
-                            val file = File(configUrl.toURI())
-                            if (file.exists()) {
-                                val config = loadJsonFile(jsonMapper, file, clazz.kotlin)
+                    val path = annotation.path.replace(".", "/")
+                    val configUrl = this::class.java.getResource("/config/$path.json")
+                    if (configUrl != null) {
+                        val file = File(configUrl.toURI())
+                        if (file.exists()) {
+                            val config = loadJsonFile(jsonMapper, file, clazz)
 //                                config.forEach { key, value ->
 //                                    if (value is AvatarConfig) {
 //                                        println("$key -> $value")
 //                                    }
 //                                }
-                                configMap[annotation.path] = config as HashMap<Int, LogicConfig>
-                                logger.info("Load Config - ${annotation.path}")
-                            }
+                            configMap[annotation.path] = config as HashMap<Int, LogicConfig>
+                            logger.info("Load Config - ${annotation.path}")
                         }
                     }
                 } catch (e: Exception) {

@@ -15,6 +15,7 @@ import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.full.primaryConstructor
+import kotlin.system.exitProcess
 
 
 object ProtocolRoute {
@@ -49,6 +50,7 @@ object ProtocolRoute {
                     }
                 } catch (e : Exception) {
                     e.printStackTrace()
+                    exitProcess(1)
                 }
             }
         }
