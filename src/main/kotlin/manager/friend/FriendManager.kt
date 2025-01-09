@@ -6,6 +6,8 @@ object FriendManager {
     private val friendMap = hashMapOf<Long, HashMap<Long, FriendInfo>>()
 
     private val applyMap = hashMapOf<Long, HashMap<Long, ApplyInfo>>()
+    private val receiveMap = hashMapOf<Long, HashMap<Long, ApplyInfo>>()
+
     private val blackListMap = hashMapOf<Long, HashMap<Long, BlackInfo>>()
 
     init {
@@ -35,6 +37,9 @@ object FriendManager {
      * @return 1 已经是好友; 2 拉黑了对面; 3 被对面拉黑; 0 成功
      */
     fun addFriend(lhs: Long, rhs: Long): Int {
+        if (lhs <= 1000 || rhs <= 1000) return -1
+        if (lhs == rhs) return -1
+
         checkFriend(lhs, rhs).takeIf { it }?.let {
             return 1
         }
@@ -79,23 +84,30 @@ object FriendManager {
         return false
     }
 
-    fun sendFriendApply(lhs: Long, rhs: Long): Boolean {
-        if (lhs <= 1000 || rhs <= 1000) return false
-        if (lhs == rhs) return false
+    fun sendFriendApply(lhs: Long, rhs: Long): Int {
+        if (lhs <= 1000 || rhs <= 1000) return -1
+        if (lhs == rhs) return -1
 
         checkFriend(lhs, rhs).takeIf { it }?.let {
-            return false
+            return 1
         }
 
-        val ret = checkBlackList(lhs, rhs)
-        if (ret != 0)
-            return false
+        when (checkBlackList(lhs, rhs)) {
+            1 -> return 2;
+            2 -> return 3;
+        }
 
         if (!applyMap.containsKey(lhs))
             applyMap[lhs] = hashMapOf()
 
         applyMap[lhs]!![rhs] = ApplyInfo(lhs, rhs, System.currentTimeMillis(), 0)
-        return true
+
+        if (!receiveMap.containsKey(rhs))
+            receiveMap[rhs] = hashMapOf()
+
+        receiveMap[rhs]!![lhs] = ApplyInfo(lhs, rhs, System.currentTimeMillis(), 0)
+
+        return 0
     }
 
     fun removeApply(lhs: Long, rhs: Long) {
@@ -103,6 +115,7 @@ object FriendManager {
         if (lhs == rhs) return
 
         applyMap[lhs]?.remove(rhs)
+        receiveMap[rhs]?.remove(lhs)
     }
 
     fun cleanApply(lhs: Long) {
@@ -136,13 +149,13 @@ object FriendManager {
     }
 
     fun acceptApply(lhs: Long, rhs: Long): Boolean {
-        checkFriendApply(lhs, rhs).takeUnless{ it }?.let {
+        checkFriendApply(rhs, lhs).takeUnless{ it }?.let {
             return false
         }
 
         addFriend(lhs, rhs).takeIf { it == 0 }?.let {
 
-            applyMap[lhs]?.let { iter ->
+            receiveMap[lhs]?.let { iter ->
                 iter[rhs]?.let { it ->
                     it.startTime = System.currentTimeMillis()
                     it.state = 2
@@ -163,12 +176,19 @@ object FriendManager {
     }
 
     fun rejectApply(lhs: Long, rhs: Long) {
-        checkFriendApply(lhs, rhs).takeUnless{ it }?.let {
+        checkFriendApply(rhs, lhs).takeUnless{ it }?.let {
             return
         }
 
-        applyMap[lhs]?.let { iter ->
+        receiveMap[lhs]?.let { iter ->
             iter[rhs]?.let { it ->
+                it.startTime = System.currentTimeMillis()
+                it.state = 1
+            }
+        }
+
+        applyMap[rhs]?.let { iter ->
+            iter[lhs]?.let { it ->
                 it.startTime = System.currentTimeMillis()
                 it.state = 1
             }
