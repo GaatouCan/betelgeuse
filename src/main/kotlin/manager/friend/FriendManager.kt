@@ -31,12 +31,18 @@ object FriendManager {
         return false
     }
 
+    /**
+     * @return 1 已经是好友; 2 拉黑了对面; 3 被对面拉黑; 0 成功
+     */
     fun addFriend(lhs: Long, rhs: Long): Int {
         checkFriend(lhs, rhs).takeIf { it }?.let {
             return 1
         }
 
-        // TODO: 加好友限制检查
+        when(checkBlackList(lhs, rhs)) {
+            1 -> return 2;
+            2 -> return 3;
+        }
 
         if (!friendMap.containsKey(lhs))
             friendMap[lhs] = hashMapOf()
@@ -70,22 +76,20 @@ object FriendManager {
             }
         }
 
-//        applyMap[rhs]?.let { iter ->
-//            iter[lhs]?.let {
-//                return it.startTime > 0
-//            }
-//        }
-
         return false
     }
 
     fun sendFriendApply(lhs: Long, rhs: Long): Boolean {
+        if (lhs <= 1000 || rhs <= 1000) return false
+        if (lhs == rhs) return false
+
         checkFriend(lhs, rhs).takeIf { it }?.let {
             return false
         }
 
-        if (lhs <= 1000 || rhs <= 1000) return false
-        if (lhs == rhs) return false
+        val ret = checkBlackList(lhs, rhs)
+        if (ret != 0)
+            return false
 
         if (!applyMap.containsKey(lhs))
             applyMap[lhs] = hashMapOf()
@@ -171,23 +175,25 @@ object FriendManager {
         }
     }
 
-    fun checkBlackList(lhs: Long, rhs: Long): Boolean {
-        if (lhs <= 1000 || rhs <= 1000) return false
-        if (lhs == rhs) return false
+    fun checkBlackList(lhs: Long, rhs: Long): Int {
+        if (lhs <= 1000 || rhs <= 1000) return 0
+        if (lhs == rhs) return 0
 
         blackListMap[lhs]?.let { iter ->
             iter[rhs]?.let { it ->
-                return it.startTime > 0
+                if (it.startTime > 0)
+                    return 1
             }
         }
 
         blackListMap[rhs]?.let { iter ->
             iter[lhs]?.let { it ->
-                return it.startTime > 0
+                if (it.startTime > 0)
+                    return 2
             }
         }
 
-        return false
+        return 0
     }
 
     fun addToBlackList(lhs: Long, rhs: Long) {
