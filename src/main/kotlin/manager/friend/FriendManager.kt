@@ -70,8 +70,119 @@ object FriendManager {
             }
         }
 
-        applyMap[rhs]?.let { iter ->
-            iter[lhs]?.let {
+//        applyMap[rhs]?.let { iter ->
+//            iter[lhs]?.let {
+//                return it.startTime > 0
+//            }
+//        }
+
+        return false
+    }
+
+    fun sendFriendApply(lhs: Long, rhs: Long): Boolean {
+        checkFriend(lhs, rhs).takeIf { it }?.let {
+            return false
+        }
+
+        if (lhs <= 1000 || rhs <= 1000) return false
+        if (lhs == rhs) return false
+
+        if (!applyMap.containsKey(lhs))
+            applyMap[lhs] = hashMapOf()
+
+        applyMap[lhs]!![rhs] = ApplyInfo(lhs, rhs, System.currentTimeMillis(), 0)
+        return true
+    }
+
+    fun removeApply(lhs: Long, rhs: Long) {
+        if (lhs <= 1000) return
+        if (lhs == rhs) return
+
+        applyMap[lhs]?.remove(rhs)
+    }
+
+    fun cleanApply(lhs: Long) {
+        if (lhs <= 1000) return
+
+        applyMap.remove(lhs)
+    }
+
+    fun cleanAcceptedApply(lhs: Long) {
+        if (lhs <= 1000) return
+        applyMap[lhs]?.let { iter ->
+            var it = iter.entries.iterator()
+            while (it.hasNext()) {
+                val entry = it.next()
+                if (entry.value.state > 1)
+                    it.remove()
+            }
+        }
+    }
+
+    fun cleanRejectedApply(lhs: Long) {
+        if (lhs <= 1000) return
+        applyMap[lhs]?.let { iter ->
+            var it = iter.entries.iterator()
+            while (it.hasNext()) {
+                val entry = it.next()
+                if (entry.value.state == 1)
+                    it.remove()
+            }
+        }
+    }
+
+    fun acceptApply(lhs: Long, rhs: Long): Boolean {
+        checkFriendApply(lhs, rhs).takeUnless{ it }?.let {
+            return false
+        }
+
+        addFriend(lhs, rhs).takeIf { it == 0 }?.let {
+
+            applyMap[lhs]?.let { iter ->
+                iter[rhs]?.let { it ->
+                    it.startTime = System.currentTimeMillis()
+                    it.state = 2
+                }
+            }
+
+            applyMap[rhs]?.let { iter ->
+                iter[lhs]?.let { it ->
+                    it.startTime = System.currentTimeMillis()
+                    it.state = 3
+                }
+            }
+
+            return true
+        }
+
+        return false
+    }
+
+    fun rejectApply(lhs: Long, rhs: Long) {
+        checkFriendApply(lhs, rhs).takeUnless{ it }?.let {
+            return
+        }
+
+        applyMap[lhs]?.let { iter ->
+            iter[rhs]?.let { it ->
+                it.startTime = System.currentTimeMillis()
+                it.state = 1
+            }
+        }
+    }
+
+    fun checkBlackList(lhs: Long, rhs: Long): Boolean {
+        if (lhs <= 1000 || rhs <= 1000) return false
+        if (lhs == rhs) return false
+
+        blackListMap[lhs]?.let { iter ->
+            iter[rhs]?.let { it ->
+                return it.startTime > 0
+            }
+        }
+
+        blackListMap[rhs]?.let { iter ->
+            iter[lhs]?.let { it ->
                 return it.startTime > 0
             }
         }
@@ -79,23 +190,28 @@ object FriendManager {
         return false
     }
 
-    fun sendFriendApply(lhs: Long, rhs: Long): Boolean {
-        if (lhs <= 1000 || rhs <= 1000) return false
-        if (lhs == rhs) return false
+    fun addToBlackList(lhs: Long, rhs: Long) {
+        if (lhs <= 1000 || rhs <= 1000) return
+        if (lhs == rhs) return
 
-        if (!applyMap.containsKey(lhs))
-            applyMap[lhs] = hashMapOf()
+        removeFriend(lhs, rhs)
 
-        applyMap[lhs]!![rhs] = ApplyInfo(lhs, rhs, System.currentTimeMillis())
-        return false
-    }
-
-    fun removeApply(lhs: Long, rhs: Long) {
-        checkFriendApply(lhs, rhs).takeUnless { it }?.let {
-            return
+        if (!blackListMap.containsKey(lhs)) {
+            blackListMap[lhs] = hashMapOf()
         }
 
-        applyMap[lhs]?.remove(rhs)
-        applyMap[rhs]?.remove(lhs)
+        blackListMap[lhs]!![rhs] = BlackInfo(lhs, rhs, System.currentTimeMillis())
+    }
+
+    fun removeFromBlackList(lhs: Long, rhs: Long) {
+        if (lhs <= 1000 || rhs <= 1000) return
+        if (lhs == rhs) return
+
+        blackListMap[lhs]?.remove(rhs)
+    }
+
+    fun cleanBlackList(lhs: Long) {
+        if (lhs <= 1000) return
+        blackListMap.remove(lhs)
     }
 }
