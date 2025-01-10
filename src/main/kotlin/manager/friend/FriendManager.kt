@@ -45,8 +45,8 @@ object FriendManager {
         }
 
         when(checkBlackList(lhs, rhs)) {
-            1 -> return 2;
-            2 -> return 3;
+            1 -> return 2
+            2 -> return 3
         }
 
         if (!friendMap.containsKey(lhs))
@@ -96,8 +96,8 @@ object FriendManager {
         }
 
         when (checkBlackList(lhs, rhs)) {
-            1 -> return 2;
-            2 -> return 3;
+            1 -> return 2
+            2 -> return 3
         }
 
         if (!applyMap.containsKey(lhs))
