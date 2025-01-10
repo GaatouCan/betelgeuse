@@ -35,8 +35,8 @@ dependencies {
     // JSON
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
 
-    implementation("org.hibernate.orm:hibernate-core:7.0.0.Beta3")
-    implementation("jakarta.persistence:jakarta.persistence-api:3.2.0")
+    // implementation("org.hibernate.orm:hibernate-core:7.0.0.Beta3")
+    // implementation("jakarta.persistence:jakarta.persistence-api:3.2.0")
 
 }
 

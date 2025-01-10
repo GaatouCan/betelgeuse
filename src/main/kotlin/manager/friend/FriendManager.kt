@@ -6,7 +6,7 @@ object FriendManager {
     private val friendMap = hashMapOf<Long, HashMap<Long, FriendInfo>>()
 
     private val applyMap = hashMapOf<Long, HashMap<Long, ApplyInfo>>()
-    private val receiveMap = hashMapOf<Long, HashMap<Long, ApplyInfo>>()
+    private val appliedMap = hashMapOf<Long, HashMap<Long, ApplyInfo>>()
 
     private val blackListMap = hashMapOf<Long, HashMap<Long, BlackInfo>>()
 
@@ -84,6 +84,9 @@ object FriendManager {
         return false
     }
 
+    /**
+     * @return 1已经是好友 2拉黑了对面 3被对面拉黑 0成功
+     */
     fun sendFriendApply(lhs: Long, rhs: Long): Int {
         if (lhs <= 1000 || rhs <= 1000) return -1
         if (lhs == rhs) return -1
@@ -102,10 +105,10 @@ object FriendManager {
 
         applyMap[lhs]!![rhs] = ApplyInfo(lhs, rhs, System.currentTimeMillis(), 0)
 
-        if (!receiveMap.containsKey(rhs))
-            receiveMap[rhs] = hashMapOf()
+        if (!appliedMap.containsKey(rhs))
+            appliedMap[rhs] = hashMapOf()
 
-        receiveMap[rhs]!![lhs] = ApplyInfo(lhs, rhs, System.currentTimeMillis(), 0)
+        appliedMap[rhs]!![lhs] = ApplyInfo(lhs, rhs, System.currentTimeMillis(), 0)
 
         return 0
     }
@@ -115,7 +118,7 @@ object FriendManager {
         if (lhs == rhs) return
 
         applyMap[lhs]?.remove(rhs)
-        receiveMap[rhs]?.remove(lhs)
+        appliedMap[rhs]?.remove(lhs)
     }
 
     fun cleanApply(lhs: Long) {
@@ -130,7 +133,7 @@ object FriendManager {
             var it = iter.entries.iterator()
             while (it.hasNext()) {
                 val entry = it.next()
-                if (entry.value.state > 1)
+                if (entry.value.state == 3)
                     it.remove()
             }
         }
@@ -148,28 +151,61 @@ object FriendManager {
         }
     }
 
+    fun cleanAcceptedApplied(lhs: Long) {
+        if (lhs <= 1000) return
+        appliedMap[lhs]?.let { iter ->
+            var it = iter.entries.iterator()
+            while (it.hasNext()) {
+                val entry = it.next()
+                if (entry.value.state == 2)
+                    it.remove()
+            }
+        }
+    }
+
+    fun cleanRejectedApplied(lhs: Long) {
+        if (lhs <= 1000) return
+        appliedMap[lhs]?.let { iter ->
+            var it = iter.entries.iterator()
+            while (it.hasNext()) {
+                val entry = it.next()
+                if (entry.value.state == 1)
+                    it.remove()
+            }
+        }
+    }
+
     fun acceptApply(lhs: Long, rhs: Long): Boolean {
         checkFriendApply(rhs, lhs).takeUnless{ it }?.let {
             return false
         }
 
-        addFriend(lhs, rhs).takeIf { it == 0 }?.let {
-
-            receiveMap[lhs]?.let { iter ->
-                iter[rhs]?.let { it ->
-                    it.startTime = System.currentTimeMillis()
-                    it.state = 2
+        when(addFriend(lhs, rhs)) {
+            0, 1 -> { // 成功添加好友或已经是好友
+                appliedMap[lhs]?.let { iter ->
+                    iter[rhs]?.let { it ->
+                        it.startTime = System.currentTimeMillis()
+                        it.state = 2
+                    }
                 }
-            }
 
-            applyMap[rhs]?.let { iter ->
-                iter[lhs]?.let { it ->
-                    it.startTime = System.currentTimeMillis()
-                    it.state = 3
+                applyMap[rhs]?.let { iter ->
+                    iter[lhs]?.let { it ->
+                        it.startTime = System.currentTimeMillis()
+                        it.state = 3
+                    }
                 }
-            }
 
-            return true
+                return true
+            }
+            2 -> { // 来黑了对面默认拒绝
+                rejectApply(lhs, rhs)
+                return false
+            }
+            3 -> { // 被对面拉黑删除这条记录
+                removeApply(rhs, lhs)
+                return false
+            }
         }
 
         return false
@@ -180,7 +216,7 @@ object FriendManager {
             return
         }
 
-        receiveMap[lhs]?.let { iter ->
+        appliedMap[lhs]?.let { iter ->
             iter[rhs]?.let { it ->
                 it.startTime = System.currentTimeMillis()
                 it.state = 1
