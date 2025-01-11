@@ -18,7 +18,7 @@ object ConfigManager {
     private val logger = LogManager.getLogger(ConfigManager::class.java)
 
     private var globalConfig: ServerConfig? = null
-    private val configMap = hashMapOf<String, HashMap<Int, LogicConfig>>()
+    private val configMap = hashMapOf<String, HashMap<Int, NormalConfig>>()
 
     init {
         val yamlMapper = ObjectMapper(YAMLFactory()).apply {
@@ -43,7 +43,7 @@ object ConfigManager {
         }
 
         val reflections = Reflections(ConfigurationBuilder().forPackages("org.example.config").addScanners(SubTypesScanner(false)))
-        val classes = reflections.getSubTypesOf(LogicConfig::class.java).map { it.kotlin }
+        val classes = reflections.getSubTypesOf(NormalConfig::class.java).map { it.kotlin }
 
         classes.forEach { clazz ->
             val annotation = clazz.findAnnotation<ConfigPath>()
@@ -60,7 +60,7 @@ object ConfigManager {
 //                                        println("$key -> $value")
 //                                    }
 //                                }
-                            configMap[annotation.path] = config as HashMap<Int, LogicConfig>
+                            configMap[annotation.path] = config as HashMap<Int, NormalConfig>
                             logger.info("Load Config - ${annotation.path}")
                         }
                     }
@@ -76,12 +76,12 @@ object ConfigManager {
         return globalConfig
     }
 
-    fun find(path: String, id: Int): LogicConfig? {
+    fun find(path: String, id: Int): NormalConfig? {
         val it = configMap[path]?: return null
         return it[id]
     }
 
-    private fun<T : LogicConfig> loadJsonFile(mapper: ObjectMapper, file: File, type : KClass<T>) : HashMap<Int, T> {
+    private fun<T : NormalConfig> loadJsonFile(mapper: ObjectMapper, file: File, type : KClass<T>) : HashMap<Int, T> {
         val result = hashMapOf<Int, T>()
         val root = mapper.readTree(file)
         val fields = root.fields()

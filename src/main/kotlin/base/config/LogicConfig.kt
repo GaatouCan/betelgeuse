@@ -1,3 +1,3 @@
 package org.example.base.config
 
-interface LogicConfig
+abstract class LogicConfig(open var configMap: Map<String, HashMap<Int, NormalConfig>>)
