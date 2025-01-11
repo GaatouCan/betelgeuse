@@ -2,9 +2,10 @@ package org.example.player
 
 import io.netty.channel.ChannelHandlerContext
 import org.example.base.net.AttributeKeys
+import java.util.concurrent.ConcurrentHashMap
 
 object PlayerManager {
-    private val playerMap = hashMapOf<Long, Player>()
+    private val playerMap: ConcurrentHashMap<Long, Player> = ConcurrentHashMap()
 
     fun find(pid: Long) : Player? {
         return playerMap[pid]
