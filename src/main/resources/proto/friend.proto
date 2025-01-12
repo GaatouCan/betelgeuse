@@ -38,3 +38,13 @@ message SendFriendApplyResponse {
   int64 pid = 1;
   int32 result = 2;
 }
+
+message HandleFriendApply {
+  int64 pid = 1;
+  int32 op = 2;
+}
+
+message HandleFriendApplyRes {
+  int64 pid = 1;
+  int32 result = 2;
+}
