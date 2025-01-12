@@ -15,3 +15,26 @@ message FriendListRequest {
 message FriendListResponse {
   repeated FriendInfo list = 1;
 }
+
+message FriendApplyRequest {
+  int64 pid = 1;
+}
+
+message FriendApplyResponse {
+  message ApplyInfo {
+    int64 fromPlayer = 1;
+    int64 toPlayer = 2;
+    int64 timestamp = 3;
+  }
+  repeated ApplyInfo list = 1;
+}
+
+// 发送好友申请
+message SendFriendApplyRequest {
+  int64 pid = 1;
+}
+
+message SendFriendApplyResponse {
+  int64 pid = 1;
+  int32 result = 2;
+}
