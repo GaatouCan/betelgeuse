@@ -75,10 +75,10 @@ message BlackListRequest {
 }
 
 message BlackListResponse {
-  message BlackListInfo {
+  message BlackListInfo_ {
     int64 pid = 1;
     int64 timestamp = 2;
   }
   bool sendAll = 1;
-  repeated BlackListInfo list = 2;
+  repeated BlackListInfo_ list = 2;
 }
