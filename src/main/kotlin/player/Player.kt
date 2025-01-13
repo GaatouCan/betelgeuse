@@ -3,6 +3,8 @@ package org.example.player
 import io.netty.channel.ChannelHandlerContext
 import org.apache.logging.log4j.LogManager
 import org.example.base.net.AttributeKeys
+import org.example.base.net.Package
+import org.example.controller.ProtocolType
 import org.reflections.Reflections
 import org.reflections.scanners.SubTypesScanner
 import org.reflections.util.ConfigurationBuilder
@@ -57,5 +59,14 @@ class Player(val context: ChannelHandlerContext) {
 
     fun getComponentByName(name: String): BaseComponent? {
         return nameToComponent[name]
+    }
+
+    fun send(type: ProtocolType, data: ByteArray) {
+        val pkg = Package.createPackage(type.value, data)
+        context.channel().writeAndFlush(pkg)
+    }
+
+    fun sendPackage(pkg: Package) {
+        context.channel().writeAndFlush(pkg)
     }
 }

@@ -1,8 +1,8 @@
 ﻿package org.example.manager.friend
 
+import org.example.controller.ProtocolType
 import org.example.player.PlayerManager
-import proto.friend.Friend
-import proto.friend.friendAppliedListResponse
+import proto.friend.friendInfo
 import proto.friend.friendListResponse
 
 object FriendManager {
@@ -76,12 +76,33 @@ object FriendManager {
         if (rhs > 1000) {
             var res = friendListResponse {
                 sendAll = false
+                friendMap[lhs]?.let { iter ->
+                    iter[rhs]?.let {
+                        list += friendInfo {
+                            pid = rhs
+                            startTime = it.startTime
+                            tag = "null"
+                        }
+                    }
+                }
             }
+            plr.send(ProtocolType.FRIEND_LIST_RESPONSE, res.toByteArray())
+            return
         }
 
         var res = friendListResponse {
             sendAll = true
+            friendMap[lhs]?.let {
+                it.forEach { info ->
+                    list += friendInfo {
+                        pid = info.key
+                        startTime = info.value.startTime
+                        tag = "null"
+                    }
+                }
+            }
         }
+        plr.send(ProtocolType.FRIEND_LIST_RESPONSE, res.toByteArray())
     }
 
     fun removeFriend(lhs: Long, rhs: Long) {
