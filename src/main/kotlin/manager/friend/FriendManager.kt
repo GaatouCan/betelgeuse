@@ -2,6 +2,8 @@
 
 import org.example.controller.ProtocolType
 import org.example.player.PlayerManager
+import proto.friend.applyInfo
+import proto.friend.friendApplyListResponse
 import proto.friend.friendInfo
 import proto.friend.friendListResponse
 
@@ -69,7 +71,7 @@ object FriendManager {
         return 0
     }
 
-    fun sendFriend(lhs: Long, rhs: Long) {
+    fun sendFriendList(lhs: Long, rhs: Long) {
         val plr = PlayerManager.find(lhs);
         if (plr == null) return
 
@@ -125,6 +127,44 @@ object FriendManager {
         }
 
         return false
+    }
+
+    fun sendApplyList(lhs: Long, rhs: Long) {
+        val plr = PlayerManager.find(lhs);
+        if (plr == null) return
+
+        if (rhs >= 1000) {
+            var res = friendApplyListResponse {
+                sendAll = false
+                applyMap[lhs]?.let { iter ->
+                    iter[rhs]?.let {
+                        list += applyInfo {
+                            fromPlayer = it.fromPlayer
+                            toPlayer = it.toPlayer
+                            timestamp = it.startTime
+                            state = it.state
+                        }
+                    }
+                }
+            }
+            plr.send(ProtocolType.FRIEND_APPLY_LIST_RESPONSE, res.toByteArray())
+            return
+        }
+
+        val res = friendApplyListResponse {
+            sendAll = true
+            applyMap[lhs]?.let { iter ->
+                iter.forEach { info ->
+                    list += applyInfo {
+                        fromPlayer = info.key
+                        toPlayer = info.value.toPlayer
+                        timestamp = info.value.startTime
+                        state = info.value.state
+                    }
+                }
+            }
+        }
+        plr.send(ProtocolType.FRIEND_APPLY_LIST_RESPONSE, res.toByteArray())
     }
 
     /**
