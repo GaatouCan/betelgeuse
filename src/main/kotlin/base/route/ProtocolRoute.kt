@@ -33,8 +33,7 @@ object ProtocolRoute {
             val routeAnnotation = clazz.findAnnotation<RouteMapping>()
             if (routeAnnotation != null) {
                 try {
-                    val controller = clazz.primaryConstructor?.call()
-                    if (controller == null) return@forEach
+                    val controller = clazz.primaryConstructor?.call() ?: return@forEach
 
                     controllerMap[routeAnnotation.route] = controller
 

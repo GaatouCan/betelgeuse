@@ -3,8 +3,6 @@ package org.example.base.net
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 import org.apache.logging.log4j.LogManager
-import java.io.IOException
-
 import org.example.base.route.ProtocolRoute
 import org.example.player.PlayerManager
 
@@ -28,19 +26,24 @@ class ServerHandler : SimpleChannelInboundHandler<Package>() {
         super.channelInactive(ctx)
         if (ctx == null) return
 
-        val pid = ctx.channel().attr(AttributeKeys.PLAYER_ID).get() ?: return
+        val pid = ctx.channel().attr(AttributeKeys.PLAYER_ID).get()
+        if (pid == null) {
+            logger.info("Client${ctx.channel().remoteAddress()} Connection Closed.")
+            return
+        }
+
         logger.info("Player [$pid] Disconnected.")
 
         PlayerManager.onLogout(pid)
     }
 
-    override fun exceptionCaught(ctx: ChannelHandlerContext?, cause: Throwable?) {
-        if (ctx == null || cause == null) return
-        if (cause is IOException) {
-            logger.warn("Client${ctx.channel().remoteAddress()} Connection Closed.")
-        } else {
-            cause.printStackTrace()
-        }
-        ctx.close()
-    }
+//    override fun exceptionCaught(ctx: ChannelHandlerContext?, cause: Throwable?) {
+//        if (ctx == null || cause == null) return
+//        if (cause is IOException) {
+//            logger.warn("Client${ctx.channel().remoteAddress()} Connection Closed.")
+//        } else {
+//            cause.printStackTrace()
+//        }
+//        ctx.close()
+//    }
 }

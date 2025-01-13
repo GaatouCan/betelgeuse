@@ -2,10 +2,7 @@
 
 import org.example.controller.ProtocolType
 import org.example.player.PlayerManager
-import proto.friend.applyInfo
-import proto.friend.friendApplyListResponse
-import proto.friend.friendInfo
-import proto.friend.friendListResponse
+import proto.friend.*
 
 object FriendManager {
 
@@ -72,7 +69,7 @@ object FriendManager {
     }
 
     fun sendFriendList(lhs: Long, rhs: Long) {
-        val plr = PlayerManager.find(lhs) ?: return;
+        val plr = PlayerManager.find(lhs) ?: return
 
         if (rhs > 1000) {
             val res = friendListResponse {
@@ -129,7 +126,7 @@ object FriendManager {
     }
 
     fun sendApplyList(lhs: Long, rhs: Long) {
-        val plr = PlayerManager.find(lhs) ?: return;
+        val plr = PlayerManager.find(lhs) ?: return
 
         if (rhs >= 1000) {
             val res = friendApplyListResponse {
@@ -196,6 +193,43 @@ object FriendManager {
         return 0
     }
 
+    fun sendAppliedList(lhs: Long, rhs: Long) {
+        val plr = PlayerManager.find(lhs) ?: return
+
+        if (rhs >= 1000) {
+            val res = friendAppliedListResponse {
+                sendAll = false
+                appliedMap[lhs]?.let { iter ->
+                    iter[rhs]?.let {
+                        list += applyInfo {
+                            fromPlayer = it.fromPlayer
+                            toPlayer = it.toPlayer
+                            timestamp = it.startTime
+                            state = it.state
+                        }
+                    }
+                }
+            }
+            plr.send(ProtocolType.FRIEND_APPLIED_LIST_RESPONSE, res.toByteArray())
+            return
+        }
+
+        val res = friendAppliedListResponse {
+            sendAll = true
+            appliedMap[lhs]?.let { iter ->
+                iter.forEach { info ->
+                    list += applyInfo {
+                        fromPlayer = info.key
+                        toPlayer = info.value.toPlayer
+                        timestamp = info.value.startTime
+                        state = info.value.state
+                    }
+                }
+            }
+        }
+        plr.send(ProtocolType.FRIEND_APPLIED_LIST_RESPONSE, res.toByteArray())
+    }
+
     fun removeApply(lhs: Long, rhs: Long) {
         if (lhs <= 1000) return
         if (lhs == rhs) return
@@ -213,7 +247,7 @@ object FriendManager {
     fun cleanAcceptedApply(lhs: Long) {
         if (lhs <= 1000) return
         applyMap[lhs]?.let { iter ->
-            var it = iter.entries.iterator()
+            val it = iter.entries.iterator()
             while (it.hasNext()) {
                 val entry = it.next()
                 if (entry.value.state == 3)
@@ -237,7 +271,7 @@ object FriendManager {
     fun cleanAcceptedApplied(lhs: Long) {
         if (lhs <= 1000) return
         appliedMap[lhs]?.let { iter ->
-            var it = iter.entries.iterator()
+            val it = iter.entries.iterator()
             while (it.hasNext()) {
                 val entry = it.next()
                 if (entry.value.state == 2)
@@ -249,7 +283,7 @@ object FriendManager {
     fun cleanRejectedApplied(lhs: Long) {
         if (lhs <= 1000) return
         appliedMap[lhs]?.let { iter ->
-            var it = iter.entries.iterator()
+            val it = iter.entries.iterator()
             while (it.hasNext()) {
                 val entry = it.next()
                 if (entry.value.state == 1)
@@ -266,7 +300,7 @@ object FriendManager {
         when(addFriend(lhs, rhs)) {
             0, 1 -> { // 成功添加好友或已经是好友
                 appliedMap[lhs]?.let { iter ->
-                    iter[rhs]?.let { it ->
+                    iter[rhs]?.let {
                         it.startTime = System.currentTimeMillis()
                         it.state = 2
                         return true
@@ -295,7 +329,7 @@ object FriendManager {
         }
 
         applyMap[rhs]?.let { iter ->
-            iter[lhs]?.let { it ->
+            iter[lhs]?.let {
                 it.startTime = System.currentTimeMillis()
                 it.state = 1
             }
@@ -310,14 +344,14 @@ object FriendManager {
         if (lhs == rhs) return 0
 
         blackListMap[lhs]?.let { iter ->
-            iter[rhs]?.let { it ->
+            iter[rhs]?.let {
                 if (it.startTime > 0)
                     return 1
             }
         }
 
         blackListMap[rhs]?.let { iter ->
-            iter[lhs]?.let { it ->
+            iter[lhs]?.let {
                 if (it.startTime > 0)
                     return 2
             }
