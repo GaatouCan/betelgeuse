@@ -8,43 +8,77 @@ message FriendInfo {
   string tag = 3;
 }
 
+message ApplyInfo {
+  int64 fromPlayer = 1;
+  int64 toPlayer = 2;
+  int64 timestamp = 3;
+  int32 state = 4;
+}
+
 message FriendListRequest {
-  int64 pid = 1;
+  int32 op = 1;
+  int64 pid = 2;
+  int32 param = 3;
 }
 
 message FriendListResponse {
-  repeated FriendInfo list = 1;
+  bool sendAll = 1;
+  repeated FriendInfo list = 2;
 }
 
-message FriendApplyRequest {
-  int64 pid = 1;
+message FriendApplyListRequest {
+  int32 op = 1;
+  int64 pid = 2;
+  int32 param = 3;
 }
 
-message FriendApplyResponse {
-  message ApplyInfo {
-    int64 fromPlayer = 1;
-    int64 toPlayer = 2;
-    int64 timestamp = 3;
-  }
-  repeated ApplyInfo list = 1;
+message FriendApplyListResponse {
+  bool sendAll = 1;
+  repeated ApplyInfo list = 2;
+}
+
+message FriendAppliedListRequest {
+  int32 op = 1;
+  int64 pid = 2;
+  int32 param = 3;
+}
+
+message FriendAppliedListResponse {
+  bool sendAll = 1;
+  repeated ApplyInfo list = 2;
 }
 
 // 发送好友申请
-message SendFriendApplyRequest {
+message SendApplyRequest {
   int64 pid = 1;
 }
 
-message SendFriendApplyResponse {
+message SendApplyResponse {
   int64 pid = 1;
   int32 result = 2;
 }
 
-message HandleFriendApply {
+message HandleApplied {
   int64 pid = 1;
   int32 op = 2;
 }
 
-message HandleFriendApplyRes {
+message HandleAppliedResult {
   int64 pid = 1;
   int32 result = 2;
+}
+
+message BlackListRequest {
+  int32 op = 1;
+  int64 pid = 2;
+  int32 param = 3;
+}
+
+message BlackListResponse {
+  message BlackListInfo {
+    int64 pid = 1;
+    int64 timestamp = 2;
+  }
+  bool sendAll = 1;
+  repeated BlackListInfo list = 2;
 }

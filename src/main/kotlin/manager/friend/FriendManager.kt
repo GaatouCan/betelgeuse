@@ -1,5 +1,10 @@
 ﻿package org.example.manager.friend
 
+import org.example.player.PlayerManager
+import proto.friend.Friend
+import proto.friend.friendAppliedListResponse
+import proto.friend.friendListResponse
+
 object FriendManager {
 
     // 玩家好友信息二维哈希表
@@ -49,17 +54,34 @@ object FriendManager {
             2 -> return 3
         }
 
+        val info = FriendInfo(lhs, rhs, System.currentTimeMillis())
+
         if (!friendMap.containsKey(lhs))
             friendMap[lhs] = hashMapOf()
-        friendMap[lhs]!![rhs] = FriendInfo(lhs, rhs, System.currentTimeMillis())
+        friendMap[lhs]!![rhs] = info
 
         if (!friendMap.containsKey(rhs))
             friendMap[rhs] = hashMapOf()
-        friendMap[rhs]!![lhs] = FriendInfo(rhs, lhs, System.currentTimeMillis())
+        friendMap[rhs]!![lhs] = info
 
         // TODO: 同步数据库
 
         return 0
+    }
+
+    fun sendFriend(lhs: Long, rhs: Long) {
+        val plr = PlayerManager.find(lhs);
+        if (plr == null) return
+
+        if (rhs > 1000) {
+            var res = friendListResponse {
+                sendAll = false
+            }
+        }
+
+        var res = friendListResponse {
+            sendAll = true
+        }
     }
 
     fun removeFriend(lhs: Long, rhs: Long) {
@@ -100,15 +122,17 @@ object FriendManager {
             2 -> return 3
         }
 
+        val apply = ApplyInfo(lhs, rhs, System.currentTimeMillis(), 0)
+
         if (!applyMap.containsKey(lhs))
             applyMap[lhs] = hashMapOf()
 
-        applyMap[lhs]!![rhs] = ApplyInfo(lhs, rhs, System.currentTimeMillis(), 0)
+        applyMap[lhs]!![rhs] = apply
 
         if (!appliedMap.containsKey(rhs))
             appliedMap[rhs] = hashMapOf()
 
-        appliedMap[rhs]!![lhs] = ApplyInfo(lhs, rhs, System.currentTimeMillis(), 0)
+        appliedMap[rhs]!![lhs] = apply
 
         return 0
     }
@@ -186,17 +210,12 @@ object FriendManager {
                     iter[rhs]?.let { it ->
                         it.startTime = System.currentTimeMillis()
                         it.state = 2
+                        return true
                     }
                 }
 
-                applyMap[rhs]?.let { iter ->
-                    iter[lhs]?.let { it ->
-                        it.startTime = System.currentTimeMillis()
-                        it.state = 3
-                    }
-                }
-
-                return true
+                // 申请信息没了
+                return false
             }
             2 -> { // 来黑了对面默认拒绝
                 rejectApply(lhs, rhs)
@@ -216,13 +235,6 @@ object FriendManager {
             return
         }
 
-        appliedMap[lhs]?.let { iter ->
-            iter[rhs]?.let { it ->
-                it.startTime = System.currentTimeMillis()
-                it.state = 1
-            }
-        }
-
         applyMap[rhs]?.let { iter ->
             iter[lhs]?.let { it ->
                 it.startTime = System.currentTimeMillis()
@@ -231,6 +243,9 @@ object FriendManager {
         }
     }
 
+    /**
+     * @return 0不在黑名单 1在自己黑名单 2在对面黑名单
+     */
     fun checkBlackList(lhs: Long, rhs: Long): Int {
         if (lhs <= 1000 || rhs <= 1000) return 0
         if (lhs == rhs) return 0
