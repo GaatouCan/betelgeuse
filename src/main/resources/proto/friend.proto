@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package proto.friend;
 
-message FriendInfo {
+message FriendInfo_ {
   int64 pid = 1;
   int64 startTime = 2;
   string tag = 3;
 }
 
-message ApplyInfo {
+message ApplyInfo_ {
   int64 fromPlayer = 1;
   int64 toPlayer = 2;
   int64 timestamp = 3;
@@ -23,7 +23,7 @@ message FriendListRequest {
 
 message FriendListResponse {
   bool sendAll = 1;
-  repeated FriendInfo list = 2;
+  repeated FriendInfo_ list = 2;
 }
 
 message FriendApplyListRequest {
@@ -34,7 +34,7 @@ message FriendApplyListRequest {
 
 message FriendApplyListResponse {
   bool sendAll = 1;
-  repeated ApplyInfo list = 2;
+  repeated ApplyInfo_ list = 2;
 }
 
 message FriendAppliedListRequest {
@@ -45,7 +45,7 @@ message FriendAppliedListRequest {
 
 message FriendAppliedListResponse {
   bool sendAll = 1;
-  repeated ApplyInfo list = 2;
+  repeated ApplyInfo_ list = 2;
 }
 
 // 发送好友申请

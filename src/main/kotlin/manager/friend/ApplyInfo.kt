@@ -1,6 +1,6 @@
 package org.example.manager.friend
 
-data class ApplyInfo(
+data class ApplyInfo (
     val fromPlayer: Long,
     val toPlayer: Long,
     var startTime: Long,

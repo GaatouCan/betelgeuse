@@ -72,11 +72,10 @@ object FriendManager {
     }
 
     fun sendFriendList(lhs: Long, rhs: Long) {
-        val plr = PlayerManager.find(lhs);
-        if (plr == null) return
+        val plr = PlayerManager.find(lhs) ?: return;
 
         if (rhs > 1000) {
-            var res = friendListResponse {
+            val res = friendListResponse {
                 sendAll = false
                 friendMap[lhs]?.let { iter ->
                     iter[rhs]?.let {
@@ -92,7 +91,7 @@ object FriendManager {
             return
         }
 
-        var res = friendListResponse {
+        val res = friendListResponse {
             sendAll = true
             friendMap[lhs]?.let {
                 it.forEach { info ->
@@ -130,11 +129,10 @@ object FriendManager {
     }
 
     fun sendApplyList(lhs: Long, rhs: Long) {
-        val plr = PlayerManager.find(lhs);
-        if (plr == null) return
+        val plr = PlayerManager.find(lhs) ?: return;
 
         if (rhs >= 1000) {
-            var res = friendApplyListResponse {
+            val res = friendApplyListResponse {
                 sendAll = false
                 applyMap[lhs]?.let { iter ->
                     iter[rhs]?.let {

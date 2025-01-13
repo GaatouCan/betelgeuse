@@ -1,6 +1,6 @@
 package org.example.manager.friend
 
-data class BlackInfo(
+data class BlackInfo (
     val fromPlayer: Long,
     val toPlayer: Long,
     val startTime: Long,

@@ -64,6 +64,10 @@ def main(argv):
                 if line.startswith('message'):
                     line = line[8:-1].strip()
 
+                    if line.endswith('_'):
+                        line = file.readline()
+                        continue
+
                     if line in proto_name_set:
                         raise f"{line} redefined."
 
