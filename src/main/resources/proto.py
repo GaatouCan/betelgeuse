@@ -1,4 +1,5 @@
 import platform
+import shutil
 import os
 import sys
 import re
@@ -41,10 +42,14 @@ def main(argv):
         os.makedirs(OUTPUT_DIR)
         print("-- Creating proto output folder")
 
-    if not os.path.exists(PROTO_OUTPUT + '/java'):
-        os.makedirs(PROTO_OUTPUT + '/java')
+    if os.path.exists(PROTO_OUTPUT + '/java'):
+        shutil.rmtree(PROTO_OUTPUT + '/java')
+    os.makedirs(PROTO_OUTPUT + '/java')
         
-    if not os.path.exists(PROTO_OUTPUT + '/kotlin'):
+    if os.path.exists(PROTO_OUTPUT + '/kotlin'):
+        if os.path.exists(PROTO_OUTPUT + '/kotlin/proto'):
+            shutil.rmtree(PROTO_OUTPUT + '/kotlin/proto')
+    else:
         os.makedirs(PROTO_OUTPUT + '/kotlin')
 
     proto_data = []
@@ -117,6 +122,7 @@ def main(argv):
     command = f'{PROTOC} --proto_path={DEFINE_DIR} --java_out={PROTO_OUTPUT}/java --kotlin_out={PROTO_OUTPUT}/kotlin {DEFINE_DIR}/*.proto'
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
     
+    print(result.stdout)
     print('-- Protobuf compile done')
 
 if __name__ == "__main__":
