@@ -78,7 +78,7 @@ class FriendController : RouteController {
                 FriendManager.sendApplyList(plr.getPlayerID(), req.pid)
                 FriendManager.sendAppliedList(req.pid, plr.getPlayerID())
             }
-            // TODO: 发送黑名单
+            2 -> FriendManager.sendBlackList(plr.getPlayerID(), req.pid)
         }
     }
 
@@ -104,6 +104,23 @@ class FriendController : RouteController {
                 }
                 plr.send(ProtocolType.FRIEND_APPLIED_RESULT, res.toByteArray())
             }
+        }
+
+        FriendManager.sendAppliedList(plr.getPlayerID(), req.pid)
+        FriendManager.sendApplyList(req.pid, plr.getPlayerID())
+    }
+
+    @ProtoMapping(ProtocolType.BLACK_LIST_REQUEST)
+    fun onBlacklistRequest(data: ByteArray, ctx: ChannelHandlerContext, plr: Player?) {
+        if (plr == null) return
+        val req = Friend.BlackListRequest.parseFrom(data)
+
+        when (req.op) {
+            1 -> FriendManager.sendBlackList(plr.getPlayerID(), 0)
+            2 -> FriendManager.sendBlackList(plr.getPlayerID(), req.pid)
+            3 -> FriendManager.addToBlackList(plr.getPlayerID(), req.pid)
+            4 -> FriendManager.removeFromBlackList(plr.getPlayerID(), req.pid)
+            5 -> FriendManager.cleanBlackList(plr.getPlayerID())
         }
     }
 }

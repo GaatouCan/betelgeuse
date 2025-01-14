@@ -3,6 +3,7 @@
 import org.example.controller.ProtocolType
 import org.example.player.PlayerManager
 import proto.friend.*
+import proto.friend.BlackListResponseKt.blackListInfo
 
 object FriendManager {
 
@@ -75,10 +76,16 @@ object FriendManager {
             val res = friendResponse {
                 sendAll = false
                 friendMap[lhs]?.let { iter ->
-                    iter[rhs]?.let {
+                    iter[rhs]?.also {
                         list += friendInfo {
                             pid = rhs
                             startTime = it.startTime
+                            tag = "null"
+                        }
+                    } ?: run {
+                        list += friendInfo {
+                            pid = rhs
+                            startTime = -1
                             tag = "null"
                         }
                     }
@@ -110,6 +117,9 @@ object FriendManager {
 
         friendMap[lhs]?.remove(rhs)
         friendMap[rhs]?.remove(lhs)
+
+        sendFriendList(lhs, rhs)
+        sendFriendList(rhs, lhs)
     }
 
     fun checkFriendApply(lhs: Long, rhs: Long): Boolean {
@@ -138,12 +148,19 @@ object FriendManager {
             val res = friendApplyResponse {
                 sendAll = false
                 applyMap[lhs]?.let { iter ->
-                    iter[rhs]?.let {
+                    iter[rhs]?.also {
                         list += applyInfo {
                             fromPlayer = it.fromPlayer
                             toPlayer = it.toPlayer
                             timestamp = it.startTime
                             state = it.state
+                        }
+                    } ?: run {
+                        list += applyInfo {
+                            fromPlayer = lhs
+                            toPlayer = rhs
+                            timestamp = -1
+                            state = 0
                         }
                     }
                 }
@@ -175,12 +192,19 @@ object FriendManager {
             val res = friendAppliedResponse {
                 sendAll = false
                 appliedMap[lhs]?.let { iter ->
-                    iter[rhs]?.let {
+                    iter[rhs]?.also {
                         list += applyInfo {
                             fromPlayer = it.fromPlayer
                             toPlayer = it.toPlayer
                             timestamp = it.startTime
                             state = it.state
+                        }
+                    } ?: run {
+                        list += applyInfo {
+                            fromPlayer = rhs
+                            toPlayer = lhs
+                            timestamp = -1
+                            state = 0
                         }
                     }
                 }
@@ -375,6 +399,39 @@ object FriendManager {
         return 0
     }
 
+    fun sendBlackList(lhs: Long, rhs: Long) {
+        val plr = PlayerManager.find(lhs) ?: return
+
+        if (rhs > 1000) {
+            val res = blackListResponse {
+                sendAll = false
+                blackListMap[lhs]?.let { iter ->
+                    iter[rhs]?.let {
+                        list += blackListInfo {
+                            pid = it.toPlayer
+                            timestamp = it.startTime
+                        }
+                    }
+                }
+            }
+            plr.send(ProtocolType.BLACK_LIST_RESPONSE, res.toByteArray())
+            return
+        }
+
+        val res = blackListResponse {
+            sendAll = true
+            blackListMap[lhs]?.let { iter ->
+                iter.forEach {
+                    list += blackListInfo {
+                        pid = it.key
+                        timestamp = it.value.startTime
+                    }
+                }
+            }
+        }
+        plr.send(ProtocolType.BLACK_LIST_RESPONSE, res.toByteArray())
+    }
+
     fun addToBlackList(lhs: Long, rhs: Long) {
         if (lhs <= 1000 || rhs <= 1000) return
         if (lhs == rhs) return
@@ -386,6 +443,7 @@ object FriendManager {
         }
 
         blackListMap[lhs]!![rhs] = BlackInfo(lhs, rhs, System.currentTimeMillis())
+        sendBlackList(lhs, rhs)
     }
 
     fun removeFromBlackList(lhs: Long, rhs: Long) {
@@ -393,10 +451,12 @@ object FriendManager {
         if (lhs == rhs) return
 
         blackListMap[lhs]?.remove(rhs)
+        sendBlackList(lhs, rhs)
     }
 
     fun cleanBlackList(lhs: Long) {
         if (lhs <= 1000) return
         blackListMap.remove(lhs)
+        sendBlackList(lhs, 0)
     }
 }

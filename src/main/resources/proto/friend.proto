@@ -16,7 +16,7 @@ message ApplyInfo_ {
 }
 
 message FriendRequest {
-  int32 op = 1;
+  int32 op = 1;     // 1发全部 2发一个 3删除
   int64 pid = 2;
   int32 param = 3;
 }
