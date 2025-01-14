@@ -168,40 +168,6 @@ object FriendManager {
         plr.send(ProtocolType.FRIEND_APPLY_RESPONSE, res.toByteArray())
     }
 
-    /**
-     * @return 1已经是好友 2拉黑了对面 3被对面拉黑 0成功
-     */
-    fun sendFriendApply(lhs: Long, rhs: Long): Int {
-        if (lhs <= 1000 || rhs <= 1000) return -1
-        if (lhs == rhs) return -1
-
-        checkFriend(lhs, rhs).takeIf { it }?.let {
-            return 1
-        }
-
-        when (checkBlackList(lhs, rhs)) {
-            1 -> return 2
-            2 -> return 3
-        }
-
-        val apply = ApplyInfo(lhs, rhs, System.currentTimeMillis(), 0)
-
-        if (!applyMap.containsKey(lhs))
-            applyMap[lhs] = hashMapOf()
-
-        applyMap[lhs]!![rhs] = apply
-
-        if (!appliedMap.containsKey(rhs))
-            appliedMap[rhs] = hashMapOf()
-
-        appliedMap[rhs]!![lhs] = apply
-
-        // 发送信息
-        sendAppliedList(rhs, lhs)
-
-        return 0
-    }
-
     fun sendAppliedList(lhs: Long, rhs: Long) {
         val plr = PlayerManager.find(lhs) ?: return
 
@@ -258,6 +224,11 @@ object FriendManager {
         applyMap.remove(lhs)
     }
 
+    fun cleanApplied(lhs: Long) {
+        if (lhs <= 1000) return
+        appliedMap.remove(lhs)
+    }
+
     fun cleanAcceptedApply(lhs: Long) {
         if (lhs <= 1000) return
         applyMap[lhs]?.let { iter ->
@@ -306,9 +277,40 @@ object FriendManager {
         }
     }
 
-    fun acceptApply(lhs: Long, rhs: Long): Boolean {
+    /**
+     * @return 1已经是好友 2拉黑了对面 3被对面拉黑 0成功
+     */
+    fun sendFriendApply(lhs: Long, rhs: Long): Int {
+        if (lhs <= 1000 || rhs <= 1000) return -1
+        if (lhs == rhs) return -1
+
+        checkFriend(lhs, rhs).takeIf { it }?.let {
+            return 1
+        }
+
+        when (checkBlackList(lhs, rhs)) {
+            1 -> return 2
+            2 -> return 3
+        }
+
+        val apply = ApplyInfo(lhs, rhs, System.currentTimeMillis(), 0)
+
+        if (!applyMap.containsKey(lhs))
+            applyMap[lhs] = hashMapOf()
+
+        applyMap[lhs]!![rhs] = apply
+
+        if (!appliedMap.containsKey(rhs))
+            appliedMap[rhs] = hashMapOf()
+
+        appliedMap[rhs]!![lhs] = apply
+
+        return 0
+    }
+
+    fun acceptApply(lhs: Long, rhs: Long): Int {
         checkFriendApply(rhs, lhs).takeUnless{ it }?.let {
-            return false
+            return 1
         }
 
         when(addFriend(lhs, rhs)) {
@@ -317,24 +319,23 @@ object FriendManager {
                     iter[rhs]?.let {
                         it.startTime = System.currentTimeMillis()
                         it.state = 2
-                        return true
                     }
                 }
 
-                // 申请信息没了
-                return false
+                return 0
             }
             2 -> { // 来黑了对面默认拒绝
                 rejectApply(lhs, rhs)
-                return false
+                return 2
             }
             3 -> { // 被对面拉黑删除这条记录
+                removeApplied(lhs, rhs)
                 removeApply(rhs, lhs)
-                return false
+                return 3
             }
         }
 
-        return false
+        return 4
     }
 
     fun rejectApply(lhs: Long, rhs: Long) {
