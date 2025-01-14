@@ -1,7 +1,6 @@
 package org.example.controller
 
 import io.netty.channel.ChannelHandlerContext
-import org.apache.logging.log4j.LogManager
 import org.example.base.route.ProtoMapping
 import org.example.base.route.RouteController
 import org.example.base.route.RouteMapping
@@ -17,7 +16,7 @@ import proto.friend.sendApplyResponse
 @RouteMapping("friend")
 class FriendController : RouteController {
 
-    private val logger = LogManager.getLogger(FriendController::class.java)
+    // private val logger = LogManager.getLogger(FriendController::class.java)
 
     @ProtoMapping(ProtocolType.FRIEND_REQUEST)
     fun onFriendListRequest(data: ByteArray, ctx: ChannelHandlerContext, plr: Player?) {

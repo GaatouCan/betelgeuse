@@ -75,7 +75,6 @@ object ProtocolRoute {
         }
 
         if (pkg.header.id != 1001) return
-
         handler(pkg.data, ctx, null)
     }
 }
