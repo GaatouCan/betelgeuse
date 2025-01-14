@@ -15,35 +15,35 @@ message ApplyInfo_ {
   int32 state = 4;
 }
 
-message FriendListRequest {
+message FriendRequest {
   int32 op = 1;
   int64 pid = 2;
   int32 param = 3;
 }
 
-message FriendListResponse {
+message FriendResponse {
   bool sendAll = 1;
   repeated FriendInfo_ list = 2;
 }
 
-message FriendApplyListRequest {
+message FriendApplyRequest {
   int32 op = 1;
   int64 pid = 2;
   int32 param = 3;
 }
 
-message FriendApplyListResponse {
+message FriendApplyResponse {
   bool sendAll = 1;
   repeated ApplyInfo_ list = 2;
 }
 
-message FriendAppliedListRequest {
-  int32 op = 1;
+message FriendAppliedRequest {
+  int32 op = 1;     // 1发全部 2发一个 3删除
   int64 pid = 2;
   int32 param = 3;
 }
 
-message FriendAppliedListResponse {
+message FriendAppliedResponse {
   bool sendAll = 1;
   repeated ApplyInfo_ list = 2;
 }
@@ -58,12 +58,12 @@ message SendApplyResponse {
   int32 result = 2;
 }
 
-message HandleApplied {
+message FriendAppliedHandle {
   int64 pid = 1;
   int32 op = 2;
 }
 
-message HandleAppliedResult {
+message FriendAppliedResult {
   int64 pid = 1;
   int32 result = 2;
 }

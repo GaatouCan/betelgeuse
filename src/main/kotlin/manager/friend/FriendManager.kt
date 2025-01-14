@@ -72,7 +72,7 @@ object FriendManager {
         val plr = PlayerManager.find(lhs) ?: return
 
         if (rhs > 1000) {
-            val res = friendListResponse {
+            val res = friendResponse {
                 sendAll = false
                 friendMap[lhs]?.let { iter ->
                     iter[rhs]?.let {
@@ -84,11 +84,11 @@ object FriendManager {
                     }
                 }
             }
-            plr.send(ProtocolType.FRIEND_LIST_RESPONSE, res.toByteArray())
+            plr.send(ProtocolType.FRIEND_RESPONSE, res.toByteArray())
             return
         }
 
-        val res = friendListResponse {
+        val res = friendResponse {
             sendAll = true
             friendMap[lhs]?.let {
                 it.forEach { info ->
@@ -100,7 +100,7 @@ object FriendManager {
                 }
             }
         }
-        plr.send(ProtocolType.FRIEND_LIST_RESPONSE, res.toByteArray())
+        plr.send(ProtocolType.FRIEND_RESPONSE, res.toByteArray())
     }
 
     fun removeFriend(lhs: Long, rhs: Long) {
@@ -122,6 +122,12 @@ object FriendManager {
             }
         }
 
+        appliedMap[rhs]?.let { iter ->
+            iter[lhs]?.let {
+                return it.startTime > 0
+            }
+        }
+
         return false
     }
 
@@ -129,7 +135,7 @@ object FriendManager {
         val plr = PlayerManager.find(lhs) ?: return
 
         if (rhs >= 1000) {
-            val res = friendApplyListResponse {
+            val res = friendApplyResponse {
                 sendAll = false
                 applyMap[lhs]?.let { iter ->
                     iter[rhs]?.let {
@@ -142,11 +148,11 @@ object FriendManager {
                     }
                 }
             }
-            plr.send(ProtocolType.FRIEND_APPLY_LIST_RESPONSE, res.toByteArray())
+            plr.send(ProtocolType.FRIEND_APPLY_RESPONSE, res.toByteArray())
             return
         }
 
-        val res = friendApplyListResponse {
+        val res = friendApplyResponse {
             sendAll = true
             applyMap[lhs]?.let { iter ->
                 iter.forEach { info ->
@@ -159,7 +165,7 @@ object FriendManager {
                 }
             }
         }
-        plr.send(ProtocolType.FRIEND_APPLY_LIST_RESPONSE, res.toByteArray())
+        plr.send(ProtocolType.FRIEND_APPLY_RESPONSE, res.toByteArray())
     }
 
     /**
@@ -190,6 +196,9 @@ object FriendManager {
 
         appliedMap[rhs]!![lhs] = apply
 
+        // 发送信息
+        sendAppliedList(rhs, lhs)
+
         return 0
     }
 
@@ -197,7 +206,7 @@ object FriendManager {
         val plr = PlayerManager.find(lhs) ?: return
 
         if (rhs >= 1000) {
-            val res = friendAppliedListResponse {
+            val res = friendAppliedResponse {
                 sendAll = false
                 appliedMap[lhs]?.let { iter ->
                     iter[rhs]?.let {
@@ -210,11 +219,11 @@ object FriendManager {
                     }
                 }
             }
-            plr.send(ProtocolType.FRIEND_APPLIED_LIST_RESPONSE, res.toByteArray())
+            plr.send(ProtocolType.FRIEND_APPLIED_RESPONSE, res.toByteArray())
             return
         }
 
-        val res = friendAppliedListResponse {
+        val res = friendAppliedResponse {
             sendAll = true
             appliedMap[lhs]?.let { iter ->
                 iter.forEach { info ->
@@ -227,7 +236,7 @@ object FriendManager {
                 }
             }
         }
-        plr.send(ProtocolType.FRIEND_APPLIED_LIST_RESPONSE, res.toByteArray())
+        plr.send(ProtocolType.FRIEND_APPLIED_RESPONSE, res.toByteArray())
     }
 
     fun removeApply(lhs: Long, rhs: Long) {
@@ -235,12 +244,17 @@ object FriendManager {
         if (lhs == rhs) return
 
         applyMap[lhs]?.remove(rhs)
-        appliedMap[rhs]?.remove(lhs)
+    }
+
+    fun removeApplied(lhs: Long, rhs: Long) {
+        if (lhs <= 1000) return
+        if (lhs == rhs) return
+
+        appliedMap[lhs]?.remove(rhs)
     }
 
     fun cleanApply(lhs: Long) {
         if (lhs <= 1000) return
-
         applyMap.remove(lhs)
     }
 
