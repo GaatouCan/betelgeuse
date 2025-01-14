@@ -50,7 +50,7 @@ object ConfigManager {
             if (annotation != null) {
                 try {
                     val path = annotation.path.replace(".", "/")
-                    val configUrl = this::class.java.getResource("/config/$path.json")
+                    val configUrl = this::class.java.getResource("/config/json/$path.json")
                     if (configUrl != null) {
                         val file = File(configUrl.toURI())
                         if (file.exists()) {
