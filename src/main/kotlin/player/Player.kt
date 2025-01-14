@@ -12,6 +12,9 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
 
+
+const val AVAILABLE_PLAYER_ID: Int = 1000
+
 class Player(val context: ChannelHandlerContext) {
 
     private val logger = LogManager.getLogger(Player::class.java)

@@ -1,6 +1,7 @@
 ﻿package org.example.manager.friend
 
 import org.example.controller.ProtocolType
+import org.example.player.AVAILABLE_PLAYER_ID
 import org.example.player.PlayerManager
 import proto.friend.*
 import proto.friend.BlackListResponseKt.blackListInfo
@@ -20,7 +21,7 @@ object FriendManager {
     }
 
     fun checkFriend(lhs: Long, rhs: Long): Boolean {
-        if (lhs <= 1000 || rhs <= 1000) return false
+        if (lhs <= AVAILABLE_PLAYER_ID || rhs <= AVAILABLE_PLAYER_ID) return false
         if (lhs == rhs) return false
 
         friendMap[lhs]?.let { iter ->
@@ -42,7 +43,7 @@ object FriendManager {
      * @return 1 已经是好友; 2 拉黑了对面; 3 被对面拉黑; 0 成功
      */
     fun addFriend(lhs: Long, rhs: Long): Int {
-        if (lhs <= 1000 || rhs <= 1000) return -1
+        if (lhs <= AVAILABLE_PLAYER_ID || rhs <= AVAILABLE_PLAYER_ID) return -1
         if (lhs == rhs) return -1
 
         checkFriend(lhs, rhs).takeIf { it }?.let {
@@ -72,7 +73,7 @@ object FriendManager {
     fun sendFriendList(lhs: Long, rhs: Long) {
         val plr = PlayerManager.find(lhs) ?: return
 
-        if (rhs > 1000) {
+        if (rhs > AVAILABLE_PLAYER_ID) {
             val res = friendResponse {
                 sendAll = false
                 friendMap[lhs]?.let { iter ->
@@ -123,7 +124,7 @@ object FriendManager {
     }
 
     fun checkFriendApply(lhs: Long, rhs: Long): Boolean {
-        if (lhs <= 1000 || rhs <= 1000) return false
+        if (lhs <= AVAILABLE_PLAYER_ID || rhs <= AVAILABLE_PLAYER_ID) return false
         if (lhs == rhs) return false
 
         applyMap[lhs]?.let { iter ->
@@ -144,7 +145,7 @@ object FriendManager {
     fun sendApplyList(lhs: Long, rhs: Long) {
         val plr = PlayerManager.find(lhs) ?: return
 
-        if (rhs >= 1000) {
+        if (rhs >= AVAILABLE_PLAYER_ID) {
             val res = friendApplyResponse {
                 sendAll = false
                 applyMap[lhs]?.let { iter ->
@@ -188,7 +189,7 @@ object FriendManager {
     fun sendAppliedList(lhs: Long, rhs: Long) {
         val plr = PlayerManager.find(lhs) ?: return
 
-        if (rhs >= 1000) {
+        if (rhs >= AVAILABLE_PLAYER_ID) {
             val res = friendAppliedResponse {
                 sendAll = false
                 appliedMap[lhs]?.let { iter ->
@@ -230,31 +231,31 @@ object FriendManager {
     }
 
     fun removeApply(lhs: Long, rhs: Long) {
-        if (lhs <= 1000) return
+        if (lhs <= AVAILABLE_PLAYER_ID) return
         if (lhs == rhs) return
 
         applyMap[lhs]?.remove(rhs)
     }
 
     fun removeApplied(lhs: Long, rhs: Long) {
-        if (lhs <= 1000) return
+        if (lhs <= AVAILABLE_PLAYER_ID) return
         if (lhs == rhs) return
 
         appliedMap[lhs]?.remove(rhs)
     }
 
     fun cleanApply(lhs: Long) {
-        if (lhs <= 1000) return
+        if (lhs <= AVAILABLE_PLAYER_ID) return
         applyMap.remove(lhs)
     }
 
     fun cleanApplied(lhs: Long) {
-        if (lhs <= 1000) return
+        if (lhs <= AVAILABLE_PLAYER_ID) return
         appliedMap.remove(lhs)
     }
 
     fun cleanAcceptedApply(lhs: Long) {
-        if (lhs <= 1000) return
+        if (lhs <= AVAILABLE_PLAYER_ID) return
         applyMap[lhs]?.let { iter ->
             val it = iter.entries.iterator()
             while (it.hasNext()) {
@@ -266,7 +267,7 @@ object FriendManager {
     }
 
     fun cleanRejectedApply(lhs: Long) {
-        if (lhs <= 1000) return
+        if (lhs <= AVAILABLE_PLAYER_ID) return
         applyMap[lhs]?.let { iter ->
             var it = iter.entries.iterator()
             while (it.hasNext()) {
@@ -278,7 +279,7 @@ object FriendManager {
     }
 
     fun cleanAcceptedApplied(lhs: Long) {
-        if (lhs <= 1000) return
+        if (lhs <= AVAILABLE_PLAYER_ID) return
         appliedMap[lhs]?.let { iter ->
             val it = iter.entries.iterator()
             while (it.hasNext()) {
@@ -290,7 +291,7 @@ object FriendManager {
     }
 
     fun cleanRejectedApplied(lhs: Long) {
-        if (lhs <= 1000) return
+        if (lhs <= AVAILABLE_PLAYER_ID) return
         appliedMap[lhs]?.let { iter ->
             val it = iter.entries.iterator()
             while (it.hasNext()) {
@@ -305,7 +306,7 @@ object FriendManager {
      * @return 1已经是好友 2拉黑了对面 3被对面拉黑 0成功
      */
     fun sendFriendApply(lhs: Long, rhs: Long): Int {
-        if (lhs <= 1000 || rhs <= 1000) return -1
+        if (lhs <= AVAILABLE_PLAYER_ID || rhs <= AVAILABLE_PLAYER_ID) return -1
         if (lhs == rhs) return -1
 
         checkFriend(lhs, rhs).takeIf { it }?.let {
@@ -379,7 +380,7 @@ object FriendManager {
      * @return 0不在黑名单 1在自己黑名单 2在对面黑名单
      */
     fun checkBlackList(lhs: Long, rhs: Long): Int {
-        if (lhs <= 1000 || rhs <= 1000) return 0
+        if (lhs <= AVAILABLE_PLAYER_ID || rhs <= AVAILABLE_PLAYER_ID) return 0
         if (lhs == rhs) return 0
 
         blackListMap[lhs]?.let { iter ->
@@ -402,7 +403,7 @@ object FriendManager {
     fun sendBlackList(lhs: Long, rhs: Long) {
         val plr = PlayerManager.find(lhs) ?: return
 
-        if (rhs > 1000) {
+        if (rhs > AVAILABLE_PLAYER_ID) {
             val res = blackListResponse {
                 sendAll = false
                 blackListMap[lhs]?.let { iter ->
@@ -433,7 +434,7 @@ object FriendManager {
     }
 
     fun addToBlackList(lhs: Long, rhs: Long) {
-        if (lhs <= 1000 || rhs <= 1000) return
+        if (lhs <= AVAILABLE_PLAYER_ID || rhs <= AVAILABLE_PLAYER_ID) return
         if (lhs == rhs) return
 
         removeFriend(lhs, rhs)
@@ -447,7 +448,7 @@ object FriendManager {
     }
 
     fun removeFromBlackList(lhs: Long, rhs: Long) {
-        if (lhs <= 1000 || rhs <= 1000) return
+        if (lhs <= AVAILABLE_PLAYER_ID || rhs <= AVAILABLE_PLAYER_ID) return
         if (lhs == rhs) return
 
         blackListMap[lhs]?.remove(rhs)
@@ -455,7 +456,7 @@ object FriendManager {
     }
 
     fun cleanBlackList(lhs: Long) {
-        if (lhs <= 1000) return
+        if (lhs <= AVAILABLE_PLAYER_ID) return
         blackListMap.remove(lhs)
         sendBlackList(lhs, 0)
     }
