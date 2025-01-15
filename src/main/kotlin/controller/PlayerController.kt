@@ -18,6 +18,10 @@ class PlayerController : RouteController {
 
     @ProtoMapping(ProtocolType.CLIENT_LOGIN_REQUEST)
     fun loginRequest(data: ByteArray, ctx: ChannelHandlerContext, plr: Player?) {
+        // 已经设置了PLAYER_ID的忽略
+        if (ctx.channel().hasAttr(AttributeKeys.PLAYER_ID))
+            return
+
         val req = proto.player.Player.ClientLoginRequest.parseFrom(data)
 
         val pid = LoginManager.onLogin(req.id, req.token)

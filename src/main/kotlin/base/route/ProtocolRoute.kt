@@ -53,7 +53,7 @@ object ProtocolRoute {
         }
     }
 
-    fun showAllRoute() {
+    fun printAllRoute() {
         controllerMap.forEach { (key, _) ->
             logger.info("Load Protocol Route $key")
         }
@@ -74,7 +74,8 @@ object ProtocolRoute {
             return
         }
 
-        if (pkg.header.id != 1001) return
-        handler(pkg.data, ctx, null)
+        // 登录协议处理
+        if (pkg.header.id == 1001)
+            handler(pkg.data, ctx, null)
     }
 }

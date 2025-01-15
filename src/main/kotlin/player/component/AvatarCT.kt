@@ -8,5 +8,7 @@ import org.example.player.PlayerComponent
 class AvatarCT(override val owner: Player) : BaseComponent(owner) {
     private val curAvatar: Int = 0
 
+    override fun onDayChange() {
 
+    }
 }

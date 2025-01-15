@@ -4,4 +4,6 @@ abstract class BaseComponent(open val owner: Player) {
     fun getPlayerID() : Long {
         return owner.getPlayerID()
     }
+
+    open fun onDayChange() {}
 }

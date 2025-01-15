@@ -22,7 +22,7 @@ fun main() {
         exitProcess(1)
     }
 
-    ProtocolRoute.showAllRoute()
+    ProtocolRoute.printAllRoute()
 
     val bossGroup: EventLoopGroup = NioEventLoopGroup()
     val workerGroup: EventLoopGroup = NioEventLoopGroup(cfg.server.worker)
