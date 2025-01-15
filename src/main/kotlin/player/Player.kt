@@ -42,6 +42,12 @@ class Player(val context: ChannelHandlerContext) {
         }
     }
 
+    fun onDayChange() {
+        componentMap.values.forEach {
+            it.onDayChange()
+        }
+    }
+
     fun getPlayerID(): Long {
         return context.channel().attr(AttributeKeys.PLAYER_ID).get() ?: 0
     }

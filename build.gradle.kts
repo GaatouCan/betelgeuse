@@ -14,6 +14,8 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+
     // Protobuf
     implementation("com.google.protobuf:protobuf-java:4.29.2")
     implementation("com.google.protobuf:protobuf-java-util:4.29.2")
