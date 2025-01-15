@@ -80,6 +80,7 @@ class Player(val context: ChannelHandlerContext) {
     }
 
     fun sendPackage(pkg: Package) {
+        // 发送信息放在协程里
         CoroutineScope(Dispatchers.IO).launch {
             context.writeAndFlush(pkg)
         }
