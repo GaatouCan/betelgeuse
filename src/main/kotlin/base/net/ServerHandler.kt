@@ -5,6 +5,7 @@ import io.netty.channel.SimpleChannelInboundHandler
 import org.apache.logging.log4j.LogManager
 import org.example.base.route.ProtocolRoute
 import org.example.player.PlayerManager
+import java.io.IOException
 
 class ServerHandler : SimpleChannelInboundHandler<Package>() {
     private val logger = LogManager.getLogger(ServerHandler::class.java)
@@ -37,13 +38,13 @@ class ServerHandler : SimpleChannelInboundHandler<Package>() {
         PlayerManager.onLogout(pid)
     }
 
-//    override fun exceptionCaught(ctx: ChannelHandlerContext?, cause: Throwable?) {
-//        if (ctx == null || cause == null) return
-//        if (cause is IOException) {
-//            logger.warn("Client${ctx.channel().remoteAddress()} Connection Closed.")
-//        } else {
-//            cause.printStackTrace()
-//        }
-//        ctx.close()
-//    }
+    override fun exceptionCaught(ctx: ChannelHandlerContext?, cause: Throwable?) {
+        if (ctx == null || cause == null) return
+        if (cause is IOException) {
+            logger.warn("Client${ctx.channel().remoteAddress()} Connection Closed.")
+        } else {
+            cause.printStackTrace()
+        }
+        ctx.close()
+    }
 }

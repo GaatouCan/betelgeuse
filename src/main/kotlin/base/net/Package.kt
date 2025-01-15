@@ -5,11 +5,7 @@
  |----------------------------------|
  |    4 bytes    |      4 bytes     |
  |==================================|
- |method |reverse|        id        |
- |----------------------------------|
- |2bytes |2bytes |      4 bytes     |
- |==================================|
- |     length    |      reverse     |
+ |       id      |      length      |
  |----------------------------------|
  |    4 bytes    |      4 bytes     |
  |==================================|
@@ -19,28 +15,13 @@
  ************************************/
 data class Package(val header: Header, val data: ByteArray) {
 
-    enum class CodecMethod(val value: Short) {
-        LINE_BASED(0),
-        PROTOBUF(1);
-
-        companion object {
-            fun fromValue(value: Short): CodecMethod? {
-                return CodecMethod.entries.find { it.value == value }
-            }
-        }
-    }
-
-    // 传输中大小为24bytes 8位对齐 小端传输
+    // 传输中大小为16bytes 8位对齐 小端传输
     data class Header(
         val magic: Int,     // 固定校验魔数 前后端一致
         val version: Int,   // 版本数 前后端一致
 
-        var method: CodecMethod,    // 解码方法
-        // var reverse: Short,
-
         var id: Int,        // 协议ID
         var length: Int     // 字节流长度
-        // var reverse: Int
     )
 
     init {
@@ -72,7 +53,7 @@ data class Package(val header: Header, val data: ByteArray) {
         const val PACKAGE_VERSION = 1001
 
         fun createPackage(id: Int, data: ByteArray): Package {
-            val header = Header(PACKAGE_MAGIC, PACKAGE_VERSION, CodecMethod.PROTOBUF, id, data.size)
+            val header = Header(PACKAGE_MAGIC, PACKAGE_VERSION, id, data.size)
             return Package(header, data)
         }
     }
