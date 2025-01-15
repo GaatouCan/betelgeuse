@@ -17,9 +17,11 @@ import org.example.base.net.Package
 import org.example.controller.ProtocolType
 
 
-const val AVAILABLE_PLAYER_ID: Int = 1000
-
 class Player(val context: ChannelHandlerContext) {
+
+    companion object {
+        const val AVAILABLE_PLAYER_ID: Int = 1000
+    }
 
     private val logger = LogManager.getLogger(Player::class.java)
 

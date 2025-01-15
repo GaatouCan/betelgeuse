@@ -1,7 +1,7 @@
 ﻿package org.example.manager.friend
 
 import org.example.controller.ProtocolType
-import org.example.player.AVAILABLE_PLAYER_ID
+import org.example.player.Player.Companion.AVAILABLE_PLAYER_ID
 import org.example.player.PlayerManager
 import proto.friend.*
 import proto.friend.BlackListResponseKt.blackListInfo
@@ -269,7 +269,7 @@ object FriendManager {
     fun cleanRejectedApply(lhs: Long) {
         if (lhs <= AVAILABLE_PLAYER_ID) return
         applyMap[lhs]?.let { iter ->
-            var it = iter.entries.iterator()
+            val it = iter.entries.iterator()
             while (it.hasNext()) {
                 val entry = it.next()
                 if (entry.value.state == 1)

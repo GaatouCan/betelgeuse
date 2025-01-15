@@ -1,8 +1,5 @@
 ﻿package org.example.base.net
 
-const val PACKAGE_MAGIC = 20241231
-const val PACKAGE_VERSION = 1001
-
 /************************************
  |     magic     |      version     |
  |----------------------------------|
@@ -71,6 +68,9 @@ data class Package(val header: Header, val data: ByteArray) {
     }
 
     companion object {
+        const val PACKAGE_MAGIC = 20241231
+        const val PACKAGE_VERSION = 1001
+
         fun createPackage(id: Int, data: ByteArray): Package {
             val header = Header(PACKAGE_MAGIC, PACKAGE_VERSION, CodecMethod.PROTOBUF, id, data.size)
             return Package(header, data)

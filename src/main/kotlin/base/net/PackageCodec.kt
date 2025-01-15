@@ -3,6 +3,8 @@
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageCodec
+import org.example.base.net.Package.Companion.PACKAGE_MAGIC
+import org.example.base.net.Package.Companion.PACKAGE_VERSION
 
 class PackageCodec : ByteToMessageCodec<Package>() {
     override fun encode(ctx: ChannelHandlerContext?, pkg: Package?, buf: ByteBuf?) {
