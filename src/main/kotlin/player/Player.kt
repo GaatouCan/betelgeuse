@@ -2,15 +2,19 @@ package org.example.player
 
 import io.netty.channel.ChannelHandlerContext
 import org.apache.logging.log4j.LogManager
-import org.example.base.net.AttributeKeys
-import org.example.base.net.Package
-import org.example.controller.ProtocolType
 import org.reflections.Reflections
 import org.reflections.scanners.SubTypesScanner
 import org.reflections.util.ConfigurationBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
+
+import org.example.base.net.AttributeKeys
+import org.example.base.net.Package
+import org.example.controller.ProtocolType
 
 
 const val AVAILABLE_PLAYER_ID: Int = 1000
@@ -72,10 +76,12 @@ class Player(val context: ChannelHandlerContext) {
 
     fun send(type: ProtocolType, data: ByteArray) {
         val pkg = Package.createPackage(type.value, data)
-        context.writeAndFlush(pkg)
+        sendPackage(pkg)
     }
 
     fun sendPackage(pkg: Package) {
-        context.writeAndFlush(pkg)
+        CoroutineScope(Dispatchers.IO).launch {
+            context.writeAndFlush(pkg)
+        }
     }
 }
