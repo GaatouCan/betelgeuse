@@ -16,10 +16,10 @@
 data class Package(val header: Header, val data: ByteArray) {
 
     // 传输中大小为16bytes 8位对齐 小端传输
-    data class Header(
+    data class Header (
         val magic: Int,     // 固定校验魔数 前后端一致
         val version: Int,   // 版本数 前后端一致
-
+        val method: Int,
         var id: Int,        // 协议ID
         var length: Int     // 字节流长度
     )
@@ -49,11 +49,13 @@ data class Package(val header: Header, val data: ByteArray) {
     }
 
     companion object {
+
         const val PACKAGE_MAGIC = 20241231
         const val PACKAGE_VERSION = 1001
+        const val PACKAGE_CODEC_METHOD = 0
 
         fun createPackage(id: Int, data: ByteArray): Package {
-            val header = Header(PACKAGE_MAGIC, PACKAGE_VERSION, id, data.size)
+            val header = Header(PACKAGE_MAGIC, PACKAGE_VERSION, PACKAGE_CODEC_METHOD, id, data.size)
             return Package(header, data)
         }
     }

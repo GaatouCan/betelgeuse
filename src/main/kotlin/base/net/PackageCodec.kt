@@ -14,6 +14,11 @@ class PackageCodec : ByteToMessageCodec<Package>() {
         buf.writeInt(pkg.header.magic)
         buf.writeInt(pkg.header.version)
 
+        buf.writeShort(pkg.header.method)
+        buf.writeShort(0)
+
+        buf.writeInt(0)
+
         buf.writeInt(pkg.header.id)
         buf.writeInt(pkg.header.length)
 
@@ -35,6 +40,11 @@ class PackageCodec : ByteToMessageCodec<Package>() {
         val magic = buf.readInt()
         val version = buf.readInt()
 
+        val method = buf.readShort().toInt()
+
+        buf.readShort()
+        buf.readInt()
+
         val id = buf.readInt()
         val length = buf.readInt()
 
@@ -51,7 +61,7 @@ class PackageCodec : ByteToMessageCodec<Package>() {
         if (length > 0)
             buf.readBytes(data)
 
-        val header = Package.Header(magic, version, id, length)
+        val header = Package.Header(magic, version, method, id, length)
         val pkg = Package(header, data)
 
         output.add(pkg)
