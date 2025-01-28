@@ -17,9 +17,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
 
     // Protobuf
-    implementation("com.google.protobuf:protobuf-java:4.29.2")
-    implementation("com.google.protobuf:protobuf-java-util:4.29.2")
-    implementation("com.google.protobuf:protobuf-kotlin:4.29.2")
+    implementation("com.google.protobuf:protobuf-java:4.29.3")
+    implementation("com.google.protobuf:protobuf-java-util:4.29.3")
+    implementation("com.google.protobuf:protobuf-kotlin:4.29.3")
 
     // Netty
     implementation("io.netty:netty-all:4.1.116.Final")

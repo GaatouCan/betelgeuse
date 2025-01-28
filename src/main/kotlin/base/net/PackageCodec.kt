@@ -17,10 +17,8 @@ class PackageCodec : ByteToMessageCodec<Package>() {
         buf.writeShort(pkg.header.method)
         buf.writeShort(0)
 
-        buf.writeInt(0)
-
         buf.writeInt(pkg.header.id)
-        buf.writeInt(pkg.header.length)
+        buf.writeLong(pkg.header.length.toLong())
 
         // 写入数据包字节流数据
         buf.writeBytes(pkg.data)
@@ -37,16 +35,14 @@ class PackageCodec : ByteToMessageCodec<Package>() {
         if (buf.readableBytes() < 24) return
 
         // 读取头部数据
-        val magic = buf.readInt()
-        val version = buf.readInt()
+        val magic = buf.readInt() and 0xFFFFFFFF.toInt()
+        val version = buf.readInt() and 0xFFFFFFFF.toInt()
 
-        val method = buf.readShort().toInt()
-
+        val method = buf.readUnsignedShort()
         buf.readShort()
-        buf.readInt()
 
         val id = buf.readInt()
-        val length = buf.readInt()
+        val length = buf.readLong().toInt()
 
         // 魔数校验和版本号必须一致
         if (magic != PACKAGE_MAGIC || version != PACKAGE_VERSION) return
