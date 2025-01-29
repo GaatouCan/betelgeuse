@@ -16,6 +16,8 @@ import org.example.base.net.AttributeKeys
 import org.example.base.net.Package
 import org.example.controller.ProtocolType
 
+import proto.player.playerInfo
+
 
 class Player(val context: ChannelHandlerContext) {
 
@@ -60,6 +62,12 @@ class Player(val context: ChannelHandlerContext) {
 
     fun onLogin() {
         logger.info("Player[${getPlayerID()}] has logged in")
+        val res = playerInfo {
+            id = getPlayerID()
+            name = "Gaatou"
+            email = "Gaatou@gmail.com"
+        }
+        send(ProtocolType.PLAYER_INFO, res.toByteArray())
     }
 
     fun onLogout() {
