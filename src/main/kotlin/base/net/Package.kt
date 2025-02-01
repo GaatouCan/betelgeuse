@@ -58,7 +58,7 @@ data class Package(val header: Header, val data: ByteArray) {
         const val PACKAGE_VERSION = 1001
         const val PACKAGE_CODEC_METHOD = 0
 
-        fun createPackage(id: Int, data: ByteArray): Package {
+        fun buildPackage(id: Int, data: ByteArray): Package {
             val header = Header(PACKAGE_MAGIC, PACKAGE_VERSION, PACKAGE_CODEC_METHOD, id, data.size)
             return Package(header, data)
         }

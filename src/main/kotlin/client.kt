@@ -37,7 +37,7 @@ fun main(args: Array<String>) {
             id = 1000001
             token = "Trust Me"
         }
-        val pkg = Package.createPackage(1001, req.toByteArray())
+        val pkg = Package.buildPackage(1001, req.toByteArray())
 
         future.channel().writeAndFlush(pkg)
 

@@ -85,7 +85,7 @@ class Player(val context: ChannelHandlerContext) {
     }
 
     fun send(type: ProtocolType, data: ByteArray) {
-        val pkg = Package.createPackage(type.value, data)
+        val pkg = Package.buildPackage(type.value, data)
         sendPackage(pkg)
     }
 
