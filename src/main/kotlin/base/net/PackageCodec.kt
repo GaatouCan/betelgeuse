@@ -7,29 +7,29 @@ import org.example.base.net.Package.Companion.PACKAGE_MAGIC
 import org.example.base.net.Package.Companion.PACKAGE_VERSION
 
 
-fun ByteBuf.writeUInt(value: UInt) {
-    this.writeInt(value.toInt())
-}
-
-fun ByteBuf.writeUIntLE(value: UInt) {
-    this.writeIntLE(value.toInt())
-}
-
-fun ByteBuf.writeULong(value: ULong) {
-    this.writeLong(value.toLong())
-}
-
-fun ByteBuf.writeULongLE(value: ULong) {
-    this.writeLongLE(value.toLong())
-}
-
-fun ByteBuf.writeUShort(value: UShort) {
-    this.writeShort(value.toInt())
-}
-
-fun ByteBuf.writeUShortLE(value: UShort) {
-    this.writeShortLE(value.toInt())
-}
+//fun ByteBuf.writeUInt(value: UInt) {
+//    this.writeInt(value.toInt())
+//}
+//
+//fun ByteBuf.writeUIntLE(value: UInt) {
+//    this.writeIntLE(value.toInt())
+//}
+//
+//fun ByteBuf.writeULong(value: ULong) {
+//    this.writeLong(value.toLong())
+//}
+//
+//fun ByteBuf.writeULongLE(value: ULong) {
+//    this.writeLongLE(value.toLong())
+//}
+//
+//fun ByteBuf.writeUShort(value: UShort) {
+//    this.writeShort(value.toInt())
+//}
+//
+//fun ByteBuf.writeUShortLE(value: UShort) {
+//    this.writeShortLE(value.toInt())
+//}
 
 
 class PackageCodec : ByteToMessageCodec<Package>() {
@@ -37,14 +37,14 @@ class PackageCodec : ByteToMessageCodec<Package>() {
         if (pkg == null || buf == null) return
 
         // 写入数据包头部数据
-        buf.writeUIntLE(pkg.header.magic.toUInt())
-        buf.writeUIntLE(pkg.header.version.toUInt())
+        buf.writeIntLE(pkg.header.magic)
+        buf.writeIntLE(pkg.header.version)
 
-        buf.writeUShortLE(pkg.header.method.toUShort())
+        buf.writeShortLE(pkg.header.method)
         buf.writeShort(0)
 
-        buf.writeUIntLE(pkg.header.id.toUInt())
-        buf.writeULongLE(pkg.header.length.toULong())
+        buf.writeIntLE(pkg.header.id)
+        buf.writeLongLE(pkg.header.length.toLong())
 
         // 写入数据包字节流数据
         buf.writeBytes(pkg.data)
