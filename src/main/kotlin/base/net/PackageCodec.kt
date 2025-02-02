@@ -6,19 +6,45 @@ import io.netty.handler.codec.ByteToMessageCodec
 import org.example.base.net.Package.Companion.PACKAGE_MAGIC
 import org.example.base.net.Package.Companion.PACKAGE_VERSION
 
+
+fun ByteBuf.writeUInt(value: UInt) {
+    this.writeInt(value.toInt())
+}
+
+fun ByteBuf.writeUIntLE(value: UInt) {
+    this.writeIntLE(value.toInt())
+}
+
+fun ByteBuf.writeULong(value: ULong) {
+    this.writeLong(value.toLong())
+}
+
+fun ByteBuf.writeULongLE(value: ULong) {
+    this.writeLongLE(value.toLong())
+}
+
+fun ByteBuf.writeUShort(value: UShort) {
+    this.writeShort(value.toInt())
+}
+
+fun ByteBuf.writeUShortLE(value: UShort) {
+    this.writeShortLE(value.toInt())
+}
+
+
 class PackageCodec : ByteToMessageCodec<Package>() {
     override fun encode(ctx: ChannelHandlerContext?, pkg: Package?, buf: ByteBuf?) {
         if (pkg == null || buf == null) return
 
         // 写入数据包头部数据
-        buf.writeInt(pkg.header.magic)
-        buf.writeInt(pkg.header.version)
+        buf.writeUIntLE(pkg.header.magic.toUInt())
+        buf.writeUIntLE(pkg.header.version.toUInt())
 
-        buf.writeShort(pkg.header.method)
+        buf.writeUShortLE(pkg.header.method.toUShort())
         buf.writeShort(0)
 
-        buf.writeInt(pkg.header.id)
-        buf.writeLong(pkg.header.length.toLong())
+        buf.writeUIntLE(pkg.header.id.toUInt())
+        buf.writeULongLE(pkg.header.length.toULong())
 
         // 写入数据包字节流数据
         buf.writeBytes(pkg.data)
@@ -35,14 +61,14 @@ class PackageCodec : ByteToMessageCodec<Package>() {
         if (buf.readableBytes() < 24) return
 
         // 读取头部数据
-        val magic = buf.readInt() and 0xFFFFFFFF.toInt()
-        val version = buf.readInt() and 0xFFFFFFFF.toInt()
+        val magic = buf.readUnsignedIntLE().toInt()
+        val version = buf.readUnsignedIntLE().toInt()
 
-        val method = buf.readUnsignedShort()
+        val method = buf.readUnsignedShortLE()
         buf.readShort()
 
-        val id = buf.readInt()
-        val length = buf.readLong().toInt()
+        val id = buf.readUnsignedIntLE().toInt()
+        val length = buf.readLongLE().toInt()
 
         // 魔数校验和版本号必须一致
         if (magic != PACKAGE_MAGIC || version != PACKAGE_VERSION) return
