@@ -37,14 +37,14 @@ class PackageCodec : ByteToMessageCodec<Package>() {
         if (pkg == null || buf == null) return
 
         // 写入数据包头部数据
-        buf.writeIntLE(pkg.header.magic)
-        buf.writeIntLE(pkg.header.version)
+        buf.writeInt(pkg.header.magic)
+        buf.writeInt(pkg.header.version)
 
-        buf.writeShortLE(pkg.header.method)
+        buf.writeShort(pkg.header.method)
         buf.writeShort(0)
 
-        buf.writeIntLE(pkg.header.id)
-        buf.writeLongLE(pkg.header.length.toLong())
+        buf.writeInt(pkg.header.id)
+        buf.writeLong(pkg.header.length.toLong())
 
         // 写入数据包字节流数据
         buf.writeBytes(pkg.data)
@@ -61,14 +61,14 @@ class PackageCodec : ByteToMessageCodec<Package>() {
         if (buf.readableBytes() < 24) return
 
         // 读取头部数据
-        val magic = buf.readUnsignedIntLE().toInt()
-        val version = buf.readUnsignedIntLE().toInt()
+        val magic = buf.readUnsignedInt().toInt()
+        val version = buf.readUnsignedInt().toInt()
 
-        val method = buf.readUnsignedShortLE()
+        val method = buf.readUnsignedShort()
         buf.readShort()
 
-        val id = buf.readUnsignedIntLE().toInt()
-        val length = buf.readLongLE().toInt()
+        val id = buf.readUnsignedInt().toInt()
+        val length = buf.readLong().toInt()
 
         // 魔数校验和版本号必须一致
         if (magic != PACKAGE_MAGIC || version != PACKAGE_VERSION) return
