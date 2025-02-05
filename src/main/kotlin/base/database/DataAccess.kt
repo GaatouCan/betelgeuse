@@ -29,7 +29,7 @@ object DataAccess {
         logger.info("Connected to database")
 
         transaction {
-            // SchemaUtils.create(AvatarTable)
+             SchemaUtils.create(AvatarTable)
         }
     }
 }
