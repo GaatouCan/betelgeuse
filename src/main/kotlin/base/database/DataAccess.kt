@@ -4,7 +4,10 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.example.base.table.AvatarTable
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.transaction
 
 object DataAccess {
 
@@ -22,7 +25,11 @@ object DataAccess {
         Database.connect(dataSource)
     }
 
-    fun connectToDatabase() {
+    fun createTable() {
         logger.info("Connected to database")
+
+        transaction {
+            // SchemaUtils.create(AvatarTable)
+        }
     }
 }

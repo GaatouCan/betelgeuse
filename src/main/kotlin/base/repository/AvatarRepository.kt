@@ -9,10 +9,10 @@ object AvatarRepository : BaseRepository<AvatarTable>() {
     override val table = AvatarTable
 
     suspend fun findByIndex(pid: Long, idx: Int): ResultRow? {
-        return find { (AvatarTable.playerId eq pid) and (AvatarTable.avatarIndex eq idx) }
+        return find { (table.playerId eq pid) and (table.avatarIndex eq idx) }
     }
 
     suspend fun findAllAvatar(pid: Long): List<ResultRow> {
-        return findAll { (AvatarTable.playerId eq pid) }
+        return findAll { (table.playerId eq pid) }
     }
 }

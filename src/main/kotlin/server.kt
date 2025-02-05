@@ -8,6 +8,7 @@ import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
 import org.apache.logging.log4j.LogManager
 import org.example.base.config.ConfigManager
+import org.example.base.database.DataAccess
 import org.example.base.net.PackageCodec
 import org.example.base.net.ServerHandler
 import org.example.base.route.ProtocolRoute
@@ -23,6 +24,7 @@ fun main() {
     }
 
     ProtocolRoute.printAllRoute()
+    DataAccess.createTable()
 
     val bossGroup: EventLoopGroup = NioEventLoopGroup()
     val workerGroup: EventLoopGroup = NioEventLoopGroup(cfg.server.worker)
