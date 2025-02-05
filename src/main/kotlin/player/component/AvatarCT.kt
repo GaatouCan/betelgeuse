@@ -5,16 +5,20 @@ import org.example.player.BaseComponent
 import org.example.player.Player
 import org.example.player.PlayerComponent
 
-// @OptIn(DelicateCoroutinesApi::class)
+
 @PlayerComponent("avatar")
 class AvatarCT(override val owner: Player) : BaseComponent(owner) {
 
     private val curAvatar: Int = 0
 
-    override suspend fun init() {
+    override suspend fun deserialize() {
         AvatarRepository.findAllAvatar(getPlayerID()).forEach { row ->
             // TODO
         }
+    }
+
+    override suspend fun serialize() {
+        // TODO
     }
 
     override fun onDayChange() {

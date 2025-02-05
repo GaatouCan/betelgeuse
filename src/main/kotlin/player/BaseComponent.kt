@@ -5,7 +5,8 @@ abstract class BaseComponent(open val owner: Player) {
         return owner.getPlayerID()
     }
 
-    open suspend fun init() {}
+    open suspend fun deserialize() {}
+    open suspend fun serialize() {}
 
     open fun onDayChange() {}
 }

@@ -68,6 +68,13 @@ class Player(val context: ChannelHandlerContext) {
             email = "Gaatou@gmail.com"
         }
         send(ProtocolType.PLAYER_INFO, res.toByteArray())
+
+        // 协程中读取数据库加载
+        CoroutineScope(Dispatchers.IO).launch {
+            componentMap.forEach { (_, ct) ->
+                ct.deserialize()
+            }
+        }
     }
 
     fun onLogout() {
