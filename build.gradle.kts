@@ -37,9 +37,12 @@ dependencies {
     // JSON
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
 
-    // implementation("org.hibernate.orm:hibernate-core:7.0.0.Beta3")
-    // implementation("jakarta.persistence:jakarta.persistence-api:3.2.0")
+    implementation("com.zaxxer:HikariCP:6.2.1")
 
+    implementation("org.jetbrains.exposed:exposed-core:0.58.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.58.0")
+
+    runtimeOnly("org.jetbrains.exposed:exposed-jdbc:0.58.0")
 }
 
 sourceSets {
