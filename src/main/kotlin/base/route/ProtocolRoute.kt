@@ -20,7 +20,7 @@ object ProtocolRoute {
     private val handlerMap : HashMap<Int, (ByteArray, ChannelHandlerContext, Player?) -> Unit> = hashMapOf()
     private val controllerMap : HashMap<String, RouteController> = hashMapOf()
 
-    private val logger: Logger = LogManager.getLogger(ProtocolRoute::class.java)
+    private val logger: Logger = LogManager.getLogger(this::class.java)
 
     init {
         val reflections = Reflections(ConfigurationBuilder().forPackages("org.example.controller").addScanners(SubTypesScanner(false)))
@@ -55,7 +55,7 @@ object ProtocolRoute {
 
     fun printAllRoute() {
         controllerMap.forEach { (key, _) ->
-            logger.info("Load Protocol Route $key")
+            logger.info("Load Protocol Route - $key")
         }
     }
 

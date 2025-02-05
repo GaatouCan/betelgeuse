@@ -2,11 +2,15 @@ package org.example.base.database
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.jetbrains.exposed.sql.Database
 
 object DataAccess {
 
-    private fun connectWithHikari() {
+    private val logger: Logger = LogManager.getLogger(this::class.java)
+
+    init {
         val hikariConfig = HikariConfig().apply {
             jdbcUrl = "jdbc:mysql://localhost:3306/testdb"
             driverClassName = "com.mysql.cj.jdbc.Driver"
@@ -16,5 +20,9 @@ object DataAccess {
         }
         val dataSource = HikariDataSource(hikariConfig)
         Database.connect(dataSource)
+    }
+
+    fun connectToDatabase() {
+        logger.info("Connected to database")
     }
 }
