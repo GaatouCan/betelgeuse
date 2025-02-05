@@ -9,7 +9,8 @@ import org.jetbrains.exposed.sql.statements.UpsertStatement
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 
-abstract class BaseDAO<T : Table> {
+// 基类DAO定义
+abstract class BaseRepository<T : Table> {
     abstract val table: T
 
     // 内部封装协程事务
