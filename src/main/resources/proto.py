@@ -23,7 +23,7 @@ def main(argv):
     # OUTPUT_DIR = "controller"
     GROUP_NAME = "org.example.controller"
 
-    PROTOC = "D:\\library\\install\\protobuf\\bin\\protoc.exe"
+    PROTOC = "C:\\Users\\admin\\Downloads\\protoc.exe"
     PROTO_OUTPUT = "../"
 
     for arg in argv:
