@@ -256,7 +256,7 @@ def generate_kotlin_object(src: str, dist: str, desc: str):
 
 def main(argv):
     SQL_DIR = 'sql'
-    ORM_DIR = 'table'
+    ORM_DIR = '../kotlin/table'
     DESC_FILE = 'desc.json'
 
     for arg in argv:

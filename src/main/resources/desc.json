@@ -1,0 +1,52 @@
+{
+    "appearance": [
+        {
+            "field": {
+                "player_id": {
+                    "null": false,
+                    "default": "",
+                    "name": "player_id",
+                    "type": "long",
+                    "comment": "玩家ID",
+                    "key": true
+                },
+                "index": {
+                    "null": false,
+                    "default": "",
+                    "name": "index",
+                    "type": "integer",
+                    "comment": "索引",
+                    "key": true
+                },
+                "expired_time": {
+                    "null": false,
+                    "default": "0",
+                    "name": "expired_time",
+                    "type": "long",
+                    "comment": "过期时间"
+                },
+                "activated": {
+                    "null": false,
+                    "default": "FALSE",
+                    "name": "activated",
+                    "type": "bool",
+                    "comment": "是否激活"
+                },
+                "in_used": {
+                    "null": false,
+                    "default": "FALSE",
+                    "name": "in_used",
+                    "type": "bool",
+                    "comment": "是否正在使用"
+                }
+            },
+            "origin": "CREATE TABLE `avatar` (`player_id` BIGINT NOT NULL COMMENT '玩家ID',`index` INT NOT NULL COMMENT '索引',`expired_time` BIGINT NOT NULL DEFAULT 0 COMMENT '过期时间',`activated` BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否激活',`in_used` BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否正在使用',PRIMARY KEY (`player_id`, `index`)) ENGINE = InnoDB CHARACTER SET = utf16 COMMENT '玩家头像';",
+            "key": [
+                "player_id",
+                "index"
+            ],
+            "name": "avatar",
+            "comment": "玩家头像"
+        }
+    ]
+}
