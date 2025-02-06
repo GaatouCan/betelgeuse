@@ -18,9 +18,9 @@ class AvatarCT(override val owner: Player) : BaseComponent(owner) {
         AvatarRepository.findAllAvatar(getPlayerID()).forEach { row ->
             val avatar = Avatar(
                 pid = row[AvatarTable.playerId],
-                index = row[AvatarTable.avatarIndex],
-                activated = row[AvatarTable.isActivated],
-                inUsed = row[AvatarTable.isInUse]
+                index = row[AvatarTable.index],
+                activated = row[AvatarTable.activated],
+                inUsed = row[AvatarTable.inUsed]
             )
 
             list.add(avatar)
@@ -34,9 +34,9 @@ class AvatarCT(override val owner: Player) : BaseComponent(owner) {
         list.forEach { elem ->
             AvatarRepository.upsert {
                 it[playerId] = elem.pid
-                it[avatarIndex] = elem.index
-                it[isActivated] = elem.activated
-                it[isInUse] = elem.inUsed
+                it[index] = elem.index
+                it[activated] = elem.activated
+                it[inUsed] = elem.inUsed
             }
         }
     }
