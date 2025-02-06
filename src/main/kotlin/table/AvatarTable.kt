@@ -9,11 +9,12 @@
 package org.example.table
 
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.javatime.*
 
 object AvatarTable : Table() {
 	val playerId = long("player_id")
 	val index = integer("index")
-	val expiredTime = long("expired_time").default(0)
+	val expiredTime = timestamp("expired_time")
 	val activated = bool("activated").default(false)
 	val inUsed = bool("in_used").default(false)
 	override val primaryKey = PrimaryKey(playerId, index)

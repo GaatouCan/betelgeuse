@@ -39,10 +39,11 @@ dependencies {
 
     implementation("com.zaxxer:HikariCP:6.2.1")
 
-    implementation("org.jetbrains.exposed:exposed-core:0.58.0")
-    implementation("org.jetbrains.exposed:exposed-dao:0.58.0")
+    implementation("org.jetbrains.exposed:exposed-core:0.59.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.59.0")
+    implementation("org.jetbrains.exposed:exposed-java-time:0.59.0")
 
-    runtimeOnly("org.jetbrains.exposed:exposed-jdbc:0.58.0")
+    runtimeOnly("org.jetbrains.exposed:exposed-jdbc:0.59.0")
 }
 
 sourceSets {

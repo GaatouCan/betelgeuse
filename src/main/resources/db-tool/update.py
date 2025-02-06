@@ -67,7 +67,13 @@ def update_table(config: dict):
         'text': "text",
 
         'BLOB': "blob",
-        'blob': "blob"
+        'blob': "blob",
+
+        'DATETIME': "datetime",
+        'datetime': "datetime",
+
+        'TIMESTAMP': "timestamp",
+        'timestamp': "timestamp",
     }
 
     # sql类型
@@ -81,7 +87,9 @@ def update_table(config: dict):
         "char": "CHAR",
         "varchar": "VARCHAR(255)",
         "text": "TEXT",
-        "blob": "BLOB"
+        "blob": "BLOB",
+        "timestamp": "TIMESTAMP",
+        "datetime": "DATETIME"
     }
 
     try:

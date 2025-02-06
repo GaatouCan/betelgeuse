@@ -50,7 +50,13 @@ sql_type_map = {
     'text': "text",
 
     'BLOB': "blob",
-    'blob': "blob"
+    'blob': "blob",
+
+    'DATETIME': "datetime",
+    'datetime': "datetime",
+
+    'TIMESTAMP': "timestamp",
+    'timestamp': "timestamp",
 }
 
 def to_upper_camel_case(x):
@@ -223,7 +229,8 @@ def generate_kotlin_object(src: str, dist: str, desc: str):
  */\n\n''')
             
                 file.write('package org.example.table\n\n')
-                file.write('import org.jetbrains.exposed.sql.Table\n\n')
+                file.write('import org.jetbrains.exposed.sql.Table\n')
+                file.write('import org.jetbrains.exposed.sql.javatime.*\n\n')
 
                 file.write('object %sTable : Table() {\n' % table_name)
 
@@ -240,6 +247,8 @@ def generate_kotlin_object(src: str, dist: str, desc: str):
                                 file.write('.default(true)')
                             elif field['default'] == '0' or field['default'] == 'FALSE':
                                 file.write('.default(false)')
+                        elif field['type'] == 'datetime' or field['type'] == 'timestamp':
+                            file.write(f".default(org.jetbrains.exposed.sql.StdDateTime.now())")
                         else:
                             file.write(f".default({field['default']})")
 
@@ -256,7 +265,7 @@ def generate_kotlin_object(src: str, dist: str, desc: str):
 
 def main(argv):
     SQL_DIR = 'sql'
-    ORM_DIR = '../kotlin/table'
+    ORM_DIR = 'table'
     DESC_FILE = 'desc.json'
 
     for arg in argv:
