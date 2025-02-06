@@ -1,7 +1,7 @@
 package org.example.player.component
 
-import org.example.base.repository.AvatarRepository
-import org.example.base.table.AvatarTable
+import org.example.repository.AvatarRepository
+import org.example.table.AvatarTable
 import org.example.player.BaseComponent
 import org.example.player.Player
 import org.example.player.PlayerComponent

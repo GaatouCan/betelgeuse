@@ -1,7 +1,7 @@
-package org.example.base.repository
+package org.example.repository
 
 import org.example.base.database.BaseRepository
-import org.example.base.table.AvatarTable
+import org.example.table.AvatarTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.and
 
