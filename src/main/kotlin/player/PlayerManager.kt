@@ -5,6 +5,7 @@ import org.example.base.net.AttributeKeys
 import org.example.base.net.Package
 import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.*
+import org.example.controller.ProtocolType
 import java.util.Calendar
 
 object PlayerManager {
@@ -65,6 +66,11 @@ object PlayerManager {
     fun onLogout(id: Long) {
         val plr = playerMap.remove(id)
         plr?.onLogout()
+    }
+
+    fun broadCast(type: ProtocolType, data: ByteArray, except: Set<Long>) {
+        val pkg = Package.buildPackage(type.value, data)
+        broadCast(pkg, except)
     }
 
     fun broadCast(pkg: Package, except: Set<Long>) {
