@@ -65,4 +65,11 @@ object PlayerManager {
         val plr = playerMap.remove(id)
         plr?.onLogout()
     }
+
+    fun broadCast(pkg: Package, except: Set<Long>) {
+        playerMap.forEach { (id, player) ->
+            if (except.contains(id)) return@forEach
+            player.sendPackage(pkg)
+        }
+    }
 }
