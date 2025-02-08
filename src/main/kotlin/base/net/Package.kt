@@ -19,7 +19,7 @@
  ************************************/
 data class Package(val header: Header, val data: ByteArray) {
 
-    // 传输中大小为24bytes 8位对齐 小端传输
+    // 传输中大小为24bytes 8位对齐 大端传输
     data class Header (
         val magic: Int,     // 固定校验魔数 前后端一致
         val version: Int,   // 版本数 前后端一致
