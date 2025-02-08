@@ -68,14 +68,14 @@ object PlayerManager {
         plr?.onLogout()
     }
 
-    fun broadCast(type: ProtocolType, data: ByteArray, except: Set<Long>) {
+    fun broadCast(type: ProtocolType, data: ByteArray, except: Set<Long> ?= null) {
         val pkg = Package.buildPackage(type.value, data)
         broadCast(pkg, except)
     }
 
-    fun broadCast(pkg: Package, except: Set<Long>) {
+    fun broadCast(pkg: Package, except: Set<Long> ?= null) {
         playerMap.forEach { (id, player) ->
-            if (except.contains(id)) return@forEach
+            if (except != null && except.contains(id)) return@forEach
             player.sendPackage(pkg)
         }
     }
