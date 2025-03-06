@@ -8,7 +8,7 @@ import org.example.base.net.Package
 import org.example.player.Player
 import org.example.player.PlayerManager
 import org.reflections.Reflections
-import org.reflections.scanners.SubTypesScanner
+import org.reflections.scanners.Scanners
 import org.reflections.util.ConfigurationBuilder
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberFunctions
@@ -23,11 +23,11 @@ object ProtocolRoute {
     private val logger: Logger = LogManager.getLogger(this::class.java)
 
     init {
-        val reflections = Reflections(ConfigurationBuilder().forPackages("org.example.controller").addScanners(SubTypesScanner(false)))
+        val reflections = Reflections(ConfigurationBuilder().forPackages("org.example.controller").addScanners(Scanners.SubTypes))
         val classes = reflections.getSubTypesOf(RouteController::class.java).map { it.kotlin }
 
-//        val reflections = Reflections(ConfigurationBuilder().forPackages("org.example").addScanners(TypeAnnotationsScanner()))
-//        val classes = reflections.getTypesAnnotatedWith(RouteController::class.java)
+//        val reflections = Reflections(ConfigurationBuilder().forPackages("org.example").addScanners(Scanners.TypesAnnotated))
+//        val classes = reflections.getTypesAnnotatedWith(ProtoMapping::class.java).map { it.kotlin }
 
         classes.forEach { clazz ->
             val routeAnnotation = clazz.findAnnotation<RouteMapping>()
