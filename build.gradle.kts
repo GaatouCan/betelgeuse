@@ -1,8 +1,8 @@
 plugins {
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.1.10"
     kotlin("plugin.serialization") version "1.9.0"
-    application
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+//    application
+//    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "org.example"
@@ -16,6 +16,8 @@ dependencies {
     testImplementation(kotlin("test"))
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.8.0")
+
 
     // Protobuf
     implementation("com.google.protobuf:protobuf-java:4.30.0")
@@ -57,20 +59,20 @@ sourceSets {
     }
 }
 
-application {
-    mainClass.set("org.example.ServerKt") // 替换为主类的全限定名
-}
+//application {
+//    mainClass.set("org.example.ServerKt") // 替换为主类的全限定名
+//}
 
 tasks.test {
     useJUnitPlatform()
 }
 
-tasks.shadowJar {
-    archiveClassifier.set("") // 替代默认的 "-all"
-    manifest {
-        attributes["Main-Class"] = "org.example.ServerKt"
-    }
-}
+//tasks.shadowJar {
+//    archiveClassifier.set("") // 替代默认的 "-all"
+//    manifest {
+//        attributes["Main-Class"] = "org.example.ServerKt"
+//    }
+//}
 
 kotlin {
     jvmToolchain(21)
