@@ -23,6 +23,8 @@ class PackageCodec : ByteToMessageCodec<Package>() {
 
         // 写入数据包字节流数据
         buf.writeBytes(pkg.data)
+
+        pkg.recycle()
     }
 
     override fun decode(
