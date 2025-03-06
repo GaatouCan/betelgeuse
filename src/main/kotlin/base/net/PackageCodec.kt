@@ -58,9 +58,6 @@ class PackageCodec : ByteToMessageCodec<Package>() {
         if (length > 0)
             buf.readBytes(data)
 
-        val header = Package.Header(magic, version, method, id, length)
-        val pkg = Package(header, data)
-
-        output.add(pkg)
+        output.add(Package.newInstance(id, data))
     }
 }

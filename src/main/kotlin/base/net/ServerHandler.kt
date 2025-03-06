@@ -21,6 +21,7 @@ class ServerHandler : SimpleChannelInboundHandler<Package>() {
         if (pkg == null || ctx == null) return
 
         ProtocolRoute.onPackage(ctx, pkg)
+        pkg.recycle()
     }
 
     override fun channelInactive(ctx: ChannelHandlerContext?) {

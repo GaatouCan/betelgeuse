@@ -1,5 +1,8 @@
 ﻿package org.example.base.net
 
+import io.netty.util.Recycler
+import io.netty.util.concurrent.FastThreadLocal
+
 /************************************
  |     magic     |      version     |
  |----------------------------------|
@@ -17,7 +20,12 @@
  |----------------------------------|
  |        variable length           |
  ************************************/
-data class Package(val header: Header, val data: ByteArray) {
+class Package private constructor(
+    private val handle: Recycler.Handle<Package>
+) {
+
+    var header: Header = Header(PACKAGE_MAGIC, PACKAGE_VERSION, PACKAGE_CODEC_METHOD, 0, 0)
+    var data: ByteArray = byteArrayOf()
 
     // 传输中大小为24bytes 8位对齐 大端传输
     data class Header (
@@ -28,28 +36,24 @@ data class Package(val header: Header, val data: ByteArray) {
         var length: Int     // 字节流长度
     )
 
-    init {
-        if (header.length == 0) {
-            header.length = data.size
-        }
+    fun setId(id: Int): Package {
+        header.id = id
+        return this
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Package
-
-        if (header != other.header) return false
-        if (!data.contentEquals(other.data)) return false
-
-        return true
+    fun setData(data: ByteArray): Package {
+        this.data = data
+        this.header.length = data.size
+        return this
     }
 
-    override fun hashCode(): Int {
-        var result = header.hashCode()
-        result = 31 * result + data.contentHashCode()
-        return result
+    fun recycle() {
+        header.id = 0
+        header.length = 0
+
+        data = byteArrayOf()
+
+        handle.recycle(this)
     }
 
     companion object {
@@ -58,9 +62,27 @@ data class Package(val header: Header, val data: ByteArray) {
         const val PACKAGE_VERSION = 1001
         const val PACKAGE_CODEC_METHOD = 0
 
-        fun buildPackage(id: Int, data: ByteArray): Package {
-            val header = Header(PACKAGE_MAGIC, PACKAGE_VERSION, PACKAGE_CODEC_METHOD, id, data.size)
-            return Package(header, data)
+        private val RecyclerInternal = object : Recycler<Package>() {
+            override fun newObject(handle: Handle<Package>): Package {
+                return Package(handle)
+            }
+        }
+
+        private val ThreadLocalPackage = object : FastThreadLocal<Package>() {
+            override fun initialValue(): Package {
+                return RecyclerInternal.get()
+            }
+        }
+
+        fun newInstance(id: Int, data: ByteArray): Package {
+            val pkg = ThreadLocalPackage.get()
+
+            pkg.header.id = id
+            pkg.header.length = data.size
+
+            pkg.data = data
+
+            return pkg
         }
     }
 }
