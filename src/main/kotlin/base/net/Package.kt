@@ -62,20 +62,20 @@ class Package private constructor(
         const val PACKAGE_VERSION = 1001
         const val PACKAGE_CODEC_METHOD = 0
 
-        private val RecyclerInternal = object : Recycler<Package>() {
+        private val RECYCLER = object : Recycler<Package>() {
             override fun newObject(handle: Handle<Package>): Package {
                 return Package(handle)
             }
         }
 
-        private val ThreadLocalPackage = object : FastThreadLocal<Package>() {
+        private val THREAD_LOCAL_PACKAGE = object : FastThreadLocal<Package>() {
             override fun initialValue(): Package {
-                return RecyclerInternal.get()
+                return RECYCLER.get()
             }
         }
 
         fun newInstance(id: Int, data: ByteArray): Package {
-            val pkg = ThreadLocalPackage.get()
+            val pkg = THREAD_LOCAL_PACKAGE.get()
 
             pkg.header.id = id
             pkg.header.length = data.size
