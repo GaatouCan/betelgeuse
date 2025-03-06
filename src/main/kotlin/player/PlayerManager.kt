@@ -69,7 +69,7 @@ object PlayerManager {
     }
 
     fun broadCast(type: ProtocolType, data: ByteArray, except: Set<Long> ?= null) {
-        val pkg = Package.buildPackage(type.value, data)
+        val pkg = Package.newInstance(type.value, data)
         broadCast(pkg, except)
     }
 
