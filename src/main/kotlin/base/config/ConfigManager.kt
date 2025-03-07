@@ -7,7 +7,6 @@ import org.reflections.scanners.Scanners
 import org.reflections.util.ConfigurationBuilder
 import org.yaml.snakeyaml.Yaml
 import java.io.File
-import java.io.FileInputStream
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.system.exitProcess
