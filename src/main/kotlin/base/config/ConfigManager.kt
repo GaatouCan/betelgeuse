@@ -64,7 +64,7 @@ object ConfigManager {
     }
 
     private fun<T : NormalConfig> loadJsonFile(file: File, type : KClass<T>) : HashMap<Int, T> {
-        val str = file.readText(Charsets.UTF_8);
+        val str = file.readText(Charsets.UTF_8)
         val preResult = Json.decodeFromString<HashMap<String, T>>(str)
         val result = preResult.mapKeys { it.key.toInt() } as HashMap<Int, T>
         return result
