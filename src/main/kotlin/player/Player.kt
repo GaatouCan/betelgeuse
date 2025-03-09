@@ -15,6 +15,7 @@ import kotlin.reflect.full.primaryConstructor
 import org.example.base.net.AttributeKeys
 import org.example.base.net.Package
 import org.example.controller.ProtocolType
+import org.reflections.scanners.Scanners
 
 import proto.player.playerInfo
 
@@ -31,7 +32,7 @@ class Player(val context: ChannelHandlerContext) {
     private val nameToComponent = hashMapOf<String, BaseComponent>()
 
     init {
-        val reflections = Reflections(ConfigurationBuilder().forPackages("org.example.player.component").addScanners(SubTypesScanner(false)))
+        val reflections = Reflections(ConfigurationBuilder().forPackages("org.example.player.component").addScanners(Scanners.SubTypes))
         val classes = reflections.getSubTypesOf(BaseComponent::class.java).map { it.kotlin }
 
         classes.forEach { clazz ->
